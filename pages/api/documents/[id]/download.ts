@@ -53,7 +53,10 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       return res.status(500).json({ error: 'Document encryption key not found' });
     }
 
-    const encryptedFilePath = path.join(process.cwd(), document.fileUrl);
+    const fileUrl = document.fileUrl.startsWith('/') 
+      ? document.fileUrl.substring(1) 
+      : document.fileUrl;
+    const encryptedFilePath = path.join(process.cwd(), fileUrl);
 
     if (!fs.existsSync(encryptedFilePath)) {
       return res.status(404).json({ error: 'File not found on server' });
