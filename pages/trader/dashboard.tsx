@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from '@/components/layout/Layout';
-import { Card, CardHeader, CardBody, CardTitle } from '@/components/ui/Card';
+import Card, { CardHeader, CardBody, CardTitle } from '@/components/ui/Card';
 import { NotificationCenter } from '@/components/NotificationCenter';
 import Button from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
+import Badge from '@/components/ui/Badge';
+import EmptyState from '@/components/ui/EmptyState';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/contexts/AuthContext';
@@ -120,15 +121,13 @@ export default function TraderDashboard() {
                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                   </div>
                 ) : quotes.length === 0 ? (
-                  <div className="text-center py-12">
-                    <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <p className="text-gray-600 mb-4">No freight requests yet</p>
-                    <Link href="/quotes/new">
-                      <Button variant="primary">Create Your First Request</Button>
-                    </Link>
-                  </div>
+                  <EmptyState
+                    icon="📋"
+                    title="No Freight Requests Yet"
+                    description="Create your first request to receive competitive quotations from pre-verified logistics partners."
+                    actionLabel="+ Create Your First Quote"
+                    actionHref="/quotes/new"
+                  />
                 ) : (
                   <div className="divide-y divide-gray-200">
                     {quotes.slice(0, 5).map((quote) => (

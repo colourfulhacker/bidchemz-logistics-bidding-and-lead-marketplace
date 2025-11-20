@@ -10,6 +10,11 @@ export interface CardProps {
   hoverable?: boolean;
 }
 
+interface CardSubComponentProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
 const Card: React.FC<CardProps> = ({
   children,
   title,
@@ -48,6 +53,18 @@ const Card: React.FC<CardProps> = ({
       </div>
     </div>
   );
+};
+
+export const CardHeader: React.FC<CardSubComponentProps> = ({ children, className = '' }) => {
+  return <div className={`border-b border-secondary-200 px-6 py-4 ${className}`}>{children}</div>;
+};
+
+export const CardBody: React.FC<CardSubComponentProps> = ({ children, className = '' }) => {
+  return <div className={`p-6 ${className}`}>{children}</div>;
+};
+
+export const CardTitle: React.FC<CardSubComponentProps> = ({ children, className = '' }) => {
+  return <h3 className={`text-lg font-semibold text-secondary-900 ${className}`}>{children}</h3>;
 };
 
 export default Card;

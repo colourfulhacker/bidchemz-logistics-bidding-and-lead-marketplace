@@ -3,6 +3,7 @@ import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import EmptyState from '@/components/ui/EmptyState';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -96,9 +97,13 @@ export default function PartnerDashboard() {
           </div>
 
           <div className="space-y-4">
-            <p className="text-gray-600 text-center py-8">
-              Freight requests matching your capabilities will appear here
-            </p>
+            <EmptyState
+              icon="🚚"
+              title="No Active Leads"
+              description="Freight requests matching your capabilities will appear here. Complete your partner profile to start receiving leads."
+              actionLabel="Manage Capabilities"
+              actionHref="/partner/capabilities"
+            />
           </div>
         </Card>
       </div>

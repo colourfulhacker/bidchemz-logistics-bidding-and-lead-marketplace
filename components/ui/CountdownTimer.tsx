@@ -12,6 +12,7 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
   showLabel = true,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
+  const [hasExpired, setHasExpired] = useState<boolean>(false);
 
   useEffect(() => {
     const calculateTimeRemaining = () => {
@@ -21,7 +22,10 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
       
       if (remaining <= 0) {
         setTimeRemaining(0);
-        if (onExpire) onExpire();
+        if (!hasExpired && onExpire) {
+          setHasExpired(true);
+          onExpire();
+        }
         return 0;
       }
       
@@ -33,10 +37,14 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
     const interval = setInterval(() => {
       const remaining = calculateTimeRemaining();
       setTimeRemaining(remaining);
+      
+      if (remaining <= 0) {
+        clearInterval(interval);
+      }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [expiresAt, onExpire]);
+  }, [expiresAt, onExpire, hasExpired]);
 
   const formatTime = (milliseconds: number) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
