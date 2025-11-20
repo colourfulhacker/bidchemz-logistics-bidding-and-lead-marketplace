@@ -39,3 +39,41 @@ The platform is built with a clean, industrial, and data-centric aesthetic, util
 - **Stripe**: (Configured, awaiting keys) For payment gateway integration; currently, manual payment approval is implemented.
 - **Chart.js**: Used in the Admin Panel for analytics visualization.
 - **Prisma ORM**: Used for database interactions.
+
+## CRITICAL SECURITY IMPLEMENTATIONS (November 2025)
+
+### Lead Fee Deduction System - Production Ready ✅
+**Status**: Architect-verified, no critical bugs
+
+**Implementation Details**:
+1. **Atomic Wallet Deductions**: Uses Prisma `updateMany` with conditional balance check (`balance >= leadCost`) to prevent race conditions
+2. **Pricing Transparency**: Database-driven pricing engine calculates costs on both frontend (preview) and backend (actual charge) using identical logic
+3. **No Fallback Pricing**: UI blocks offer submission if pricing API fails - prevents mismatch between displayed and charged amounts
+4. **Transaction Safety**: All operations (offer creation, wallet debit, transaction logging, audit logging) wrapped in single Prisma transaction
+5. **Error Handling**: Clear user messages for insufficient balance, concurrent transaction failures, and pricing errors
+
+**Security Guarantees**:
+- ❌ **NO auto-credit vulnerability**: Direct wallet POST endpoint disabled
+- ✅ **Manual payment approval**: All recharges require admin approval via payment request workflow
+- ✅ **Atomic operations**: Wallet cannot go negative even under concurrent offer submissions
+- ✅ **Audit trail**: All wallet operations logged with user, amount, and timestamp
+- ✅ **Pricing integrity**: Same pricing engine used for preview and actual charge - no mismatches possible
+
+**Key Files**:
+- `pages/api/offers/index.ts` - Offer submission with atomic wallet deduction
+- `lib/pricing-engine.ts` - Configurable pricing calculation
+- `lib/wallet.ts` - Wallet management utilities
+- `pages/api/calculate-lead-cost.ts` - Pricing transparency API
+- `pages/partner/submit-offer.tsx` - Partner UI with pricing breakdown
+- `pages/api/payment-requests/[id].ts` - Admin approval workflow
+
+**Test Accounts**:
+- Admin: `admin@bidchemz.com` / `Admin@123`
+- Trader: `trader@example.com` / `Trader@123`
+- Partner: `partner@logistics.com` / `Partner@123` (₹10,000 wallet balance)
+
+**Database Schema Additions**:
+- `PricingConfig` - Admin-configurable pricing parameters
+- `LeadWallet` - Partner prepaid balances
+- `LeadTransaction` - Complete audit trail of all wallet operations
+- `PaymentRequest` - Manual payment approval workflow

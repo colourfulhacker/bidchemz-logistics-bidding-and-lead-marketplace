@@ -404,12 +404,12 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/signup">
-                <Button variant="primary" className="bg-white text-blue-700 hover:bg-blue-50 px-12 py-5 text-lg font-bold shadow-2xl">
+                <button className="inline-flex items-center justify-center bg-white text-blue-700 hover:bg-blue-50 px-12 py-5 text-lg font-bold shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
                   Get Started Free
-                </Button>
+                </button>
               </Link>
               <Link href="/policies">
-                <button className="inline-flex items-center justify-center bg-transparent text-white hover:bg-white hover:bg-opacity-10 px-12 py-5 text-lg font-semibold border-2 border-white rounded-lg transition-all">
+                <button className="inline-flex items-center justify-center bg-transparent text-white hover:bg-white hover:bg-opacity-10 px-12 py-5 text-lg font-semibold border-2 border-white rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
                   View Our Policies
                 </button>
               </Link>
