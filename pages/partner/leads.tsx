@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Layout } from '@/components/layout/Layout';
-import { Card, CardHeader, CardBody, CardTitle } from '@/components/ui/Card';
+import Card, { CardHeader, CardBody, CardTitle } from '@/components/ui/Card';
 import { CountdownTimer } from '@/components/CountdownTimer';
 import Button from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
+import Badge from '@/components/ui/Badge';
 import { useAuth } from '@/contexts/AuthContext';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface Lead {
   id: string;
@@ -31,6 +32,9 @@ export default function PartnerLeads() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('all');
+  const [hazardFilter, setHazardFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -40,7 +44,8 @@ export default function PartnerLeads() {
 
   const fetchLeads = async () => {
     try {
-      const response = await fetch(`/api/quotes?status=${filter === 'all' ? '' : filter}`, {
+      const url = filter === 'all' ? '/api/quotes' : `/api/quotes?status=${filter}`;
+      const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -56,6 +61,27 @@ export default function PartnerLeads() {
       setLoading(false);
     }
   };
+
+  const filteredLeads = leads.filter(lead => {
+    // Hazard filter
+    if (hazardFilter === 'hazardous' && !lead.isHazardous) return false;
+    if (hazardFilter === 'non-hazardous' && lead.isHazardous) return false;
+    
+    // Search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      return (
+        lead.cargoName.toLowerCase().includes(query) ||
+        lead.quoteNumber.toLowerCase().includes(query) ||
+        lead.pickupCity.toLowerCase().includes(query) ||
+        lead.deliveryCity.toLowerCase().includes(query) ||
+        lead.pickupState.toLowerCase().includes(query) ||
+        lead.deliveryState.toLowerCase().includes(query)
+      );
+    }
+    
+    return true;
+  });
 
   const handleSubmitOffer = (leadId: string) => {
     router.push(`/partner/submit-offer?quoteId=${leadId}`);
@@ -74,39 +100,114 @@ export default function PartnerLeads() {
   return (
     <Layout>
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Available Leads</h1>
-          <div className="flex items-center space-x-3">
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold text-gray-900">Available Leads</h1>
+            <Button
+              variant="outline"
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center space-x-2"
             >
-              <option value="all">All Leads</option>
-              <option value="MATCHING">Active</option>
-              <option value="OFFERS_AVAILABLE">With Offers</option>
-              <option value="EXPIRED">Expired</option>
-            </select>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              <span>{showFilters ? 'Hide' : 'Show'} Filters</span>
+            </Button>
           </div>
+
+          {showFilters && (
+            <Card className="mb-4">
+              <CardBody>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Status
+                    </label>
+                    <select
+                      value={filter}
+                      onChange={(e) => setFilter(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="all">All Statuses</option>
+                      <option value="MATCHING">Active</option>
+                      <option value="OFFERS_AVAILABLE">With Offers</option>
+                      <option value="EXPIRED">Expired</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Hazard Type
+                    </label>
+                    <select
+                      value={hazardFilter}
+                      onChange={(e) => setHazardFilter(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="all">All Types</option>
+                      <option value="hazardous">Hazardous Only</option>
+                      <option value="non-hazardous">Non-Hazardous Only</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Search
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Search cargo, location, or quote ID..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                {(hazardFilter !== 'all' || searchQuery) && (
+                  <div className="mt-4 flex items-center justify-between">
+                    <p className="text-sm text-gray-600">
+                      Showing {filteredLeads.length} of {leads.length} leads
+                    </p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setHazardFilter('all');
+                        setSearchQuery('');
+                      }}
+                    >
+                      Clear Filters
+                    </Button>
+                  </div>
+                )}
+              </CardBody>
+            </Card>
+          )}
         </div>
 
         {loading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           </div>
-        ) : leads.length === 0 ? (
+        ) : filteredLeads.length === 0 ? (
           <Card>
             <CardBody className="text-center py-12">
-              <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-              </svg>
-              <p className="text-gray-600 mb-2">No leads available at the moment</p>
-              <p className="text-sm text-gray-500">New freight requests matching your capabilities will appear here</p>
+              <EmptyState
+                icon="📦"
+                title={searchQuery || hazardFilter !== 'all' ? "No matching leads found" : "No leads available"}
+                description={searchQuery || hazardFilter !== 'all' ? "Try adjusting your filters" : "New freight requests matching your capabilities will appear here"}
+                actionLabel={searchQuery || hazardFilter !== 'all' ? "Clear Filters" : undefined}
+                onAction={searchQuery || hazardFilter !== 'all' ? () => {
+                  setSearchQuery('');
+                  setHazardFilter('all');
+                } : undefined}
+              />
             </CardBody>
           </Card>
         ) : (
           <div className="grid gap-4">
-            {leads.map((lead) => (
+            {filteredLeads.map((lead) => (
               <Card key={lead.id} className="hover:shadow-md transition-shadow">
                 <CardBody>
                   <div className="flex items-start justify-between">
@@ -120,7 +221,7 @@ export default function PartnerLeads() {
                             ⚠️ Hazardous {lead.hazardClass}
                           </Badge>
                         )}
-                        <Badge variant={lead.status === 'MATCHING' ? 'success' : 'secondary'}>
+                        <Badge variant={lead.status === 'MATCHING' ? 'success' : 'neutral'}>
                           {lead.status}
                         </Badge>
                       </div>

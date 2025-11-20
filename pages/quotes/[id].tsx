@@ -15,6 +15,8 @@ export default function QuoteDetails() {
   const [quote, setQuote] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'details' | 'offers' | 'documents'>('details');
+  const [sortBy, setSortBy] = useState<'price' | 'transit' | 'rating'>('price');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   useEffect(() => {
     if (!user || !id) return;
@@ -64,6 +66,31 @@ export default function QuoteDetails() {
   const isTrader = user?.role === 'TRADER';
   const offersCount = quote.offers?.length || 0;
 
+  const sortedOffers = React.useMemo(() => {
+    if (!quote?.offers) return [];
+    
+    const offers = [...quote.offers];
+    offers.sort((a, b) => {
+      let comparison = 0;
+      
+      switch (sortBy) {
+        case 'price':
+          comparison = a.price - b.price;
+          break;
+        case 'transit':
+          comparison = a.transitDays - b.transitDays;
+          break;
+        case 'rating':
+          comparison = (b.partner?.rating || 0) - (a.partner?.rating || 0);
+          break;
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+    
+    return offers;
+  }, [quote?.offers, sortBy, sortOrder]);
+
   return (
     <Layout>
       <div className="max-w-7xl mx-auto">
@@ -89,7 +116,7 @@ export default function QuoteDetails() {
                 quote.status === 'SELECTED' ? 'success' :
                 quote.status === 'OFFERS_AVAILABLE' ? 'primary' :
                 quote.status === 'MATCHING' ? 'warning' :
-                'secondary'
+                'neutral'
               }>
                 {quote.status.replace('_', ' ')}
               </Badge>
@@ -265,31 +292,94 @@ export default function QuoteDetails() {
                   <p className="text-sm text-gray-500">Matched partners are reviewing your request</p>
                 </CardBody>
               </Card>
-            ) : isTrader ? (
-              <Button
-                variant="primary"
-                onClick={() => router.push(`/trader/offers?quoteId=${id}`)}
-                className="mb-4"
-              >
-                Compare All {offersCount} Offers →
-              </Button>
-            ) : null}
-            
-            {offersCount > 0 && (
-              <div className="grid gap-4">
-                {quote.offers?.slice(0, 3).map((offer: any) => (
-                  <Card key={offer.id}>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-4">
+                  {isTrader && (
+                    <Button
+                      variant="primary"
+                      onClick={() => router.push(`/trader/offers?quoteId=${id}`)}
+                    >
+                      Compare All {offersCount} Offers →
+                    </Button>
+                  )}
+                  
+                  <div className="flex items-center space-x-3">
+                    <label className="text-sm font-medium text-gray-700">Sort by:</label>
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value as any)}
+                      className="px-3 py-1.5 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    >
+                      <option value="price">Price</option>
+                      <option value="transit">Transit Time</option>
+                      <option value="rating">Partner Rating</option>
+                    </select>
+                    
+                    <button
+                      onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                      className="p-1.5 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                      title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
+                    >
+                      <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {sortOrder === 'asc' ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                        ) : (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
+                        )}
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid gap-4">
+                  {sortedOffers.slice(0, 5).map((offer: any) => (
+                  <Card key={offer.id} className="hover:shadow-md transition-shadow">
                     <CardBody>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-semibold text-gray-900">{offer.partner?.companyName}</p>
-                          <p className="text-2xl font-bold text-blue-600 mt-2">₹{offer.price.toLocaleString()}</p>
-                          <p className="text-sm text-gray-600">{offer.transitDays} days transit</p>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <p className="text-lg font-semibold text-gray-900">{offer.partner?.companyName}</p>
+                            {offer.partner?.rating && (
+                              <div className="flex items-center space-x-1">
+                                <svg className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <span className="text-sm text-gray-600">{offer.partner.rating.toFixed(1)}</span>
+                              </div>
+                            )}
+                            <Badge variant={offer.status === 'PENDING' ? 'warning' : 'success'}>
+                              {offer.status}
+                            </Badge>
+                          </div>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                              <p className="text-sm text-gray-500">Price</p>
+                              <p className="text-xl font-bold text-blue-600">₹{offer.price.toLocaleString()}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">Transit Time</p>
+                              <p className="font-semibold text-gray-900">{offer.transitDays} days</p>
+                            </div>
+                            {offer.insuranceIncluded && (
+                              <div>
+                                <p className="text-sm text-gray-500">Insurance</p>
+                                <p className="text-sm text-green-600">✓ Included</p>
+                              </div>
+                            )}
+                            {offer.vehicleType && (
+                              <div>
+                                <p className="text-sm text-gray-500">Vehicle</p>
+                                <p className="text-sm text-gray-900">{offer.vehicleType}</p>
+                              </div>
+                            )}
+                          </div>
                         </div>
                         {isTrader && offer.status === 'PENDING' && (
                           <Button
                             variant="primary"
                             onClick={() => router.push(`/trader/offers?quoteId=${id}`)}
+                            className="ml-4"
                           >
                             View Details
                           </Button>
@@ -298,7 +388,19 @@ export default function QuoteDetails() {
                     </CardBody>
                   </Card>
                 ))}
-              </div>
+                </div>
+                
+                {offersCount > 5 && (
+                  <div className="mt-4 text-center">
+                    <Button
+                      variant="secondary"
+                      onClick={() => router.push(`/trader/offers?quoteId=${id}`)}
+                    >
+                      View All {offersCount} Offers
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}

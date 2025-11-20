@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from '@/components/layout/Layout';
-import { Card, CardHeader, CardBody, CardTitle } from '@/components/ui/Card';
+import Card, { CardHeader, CardBody, CardTitle } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { Alert } from '@/components/ui/Alert';
+import Alert from '@/components/ui/Alert';
+import Badge from '@/components/ui/Badge';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface WalletData {
@@ -155,7 +156,7 @@ export default function PartnerWallet() {
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Lead Wallet</h1>
 
         {isLowBalance && (
-          <Alert variant="warning" className="mb-6">
+          <Alert type="warning" className="mb-6">
             ⚠️ Low balance alert! Your current balance (₹{wallet?.balance.toLocaleString()}) is below your threshold (₹{wallet?.alertThreshold.toLocaleString()}). Please recharge to continue receiving leads.
           </Alert>
         )}
