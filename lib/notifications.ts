@@ -244,3 +244,11 @@ export async function notifyOfferExpiringSoon(
     },
   });
 }
+
+export async function sendLowBalanceAlert(
+  userId: string,
+  currentBalance: number
+): Promise<void> {
+  const threshold = 500;
+  await notifyLowWalletBalance(userId, currentBalance, threshold);
+}
