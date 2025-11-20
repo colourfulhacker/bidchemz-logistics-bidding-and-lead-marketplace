@@ -2,7 +2,11 @@ import bcrypt from 'bcryptjs';
 import { sign, verify } from 'jsonwebtoken';
 import { UserRole } from '@prisma/client';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'bidchemz-secret-change-in-production';
+if (!process.env.JWT_SECRET) {
+  throw new Error('FATAL: JWT_SECRET environment variable is required but not set. Application cannot start.');
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = '7d';
 
 export interface JWTPayload {
