@@ -1,0 +1,64 @@
+import React, { ReactNode } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+
+interface LayoutProps {
+  children: ReactNode;
+}
+
+export function Layout({ children }: LayoutProps) {
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <nav className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <Link href="/" className="text-xl font-bold text-blue-600">
+                BidChemz Logistics
+              </Link>
+            </div>
+            <div className="flex items-center space-x-4">
+              {user ? (
+                <>
+                  <span className="text-sm text-gray-700">
+                    {user.companyName || user.email}
+                  </span>
+                  <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+                    {user.role}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="text-sm text-gray-700 hover:text-gray-900"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="text-sm text-gray-700 hover:text-gray-900">
+                    Login
+                  </Link>
+                  <Link href="/signup" className="text-sm text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {children}
+      </main>
+    </div>
+  );
+}
