@@ -120,6 +120,7 @@ model User {
   partnerCapability PartnerCapability?
   leadWallet        LeadWallet?
   auditLogs         AuditLog[]
+  policyConsents    PolicyConsent[]
 
   @@index([email])
   @@index([role])
@@ -499,4 +500,34 @@ model WebhookLog {
 
   @@index([event])
   @@index([createdAt])
+}
+
+// 12. POLICY CONSENT MODEL
+model PolicyConsent {
+  id String @id @default(cuid())
+
+  userId       String
+  policyType   String
+  policyVersion String
+  accepted     Boolean @default(false)
+  acceptedAt   DateTime?
+
+  // Audit trail
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([policyType])
+}
+
+enum PolicyType {
+  TERMS_OF_SERVICE
+  PRIVACY_POLICY
+  PARTNER_POLICY
 }

@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { UserRole } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { hashPassword, generateToken } from '@/lib/auth';
+import { validatePasswordStrength } from '@/lib/password-validation';
+import { PARTNER_POLICY, TERMS_OF_SERVICE, PRIVACY_POLICY } from '@/lib/policy';
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,6 +21,7 @@ export default async function handler(
       role,
       companyName,
       gstin,
+      consents,
     } = req.body;
 
     if (!email || !password || !role) {
@@ -30,6 +33,34 @@ export default async function handler(
     if (!Object.values(UserRole).includes(role)) {
       return res.status(400).json({
         error: 'Invalid role. Must be TRADER, LOGISTICS_PARTNER, or ADMIN',
+      });
+    }
+
+    // Validate password strength
+    const passwordValidation = validatePasswordStrength(password);
+    if (!passwordValidation.isValid) {
+      return res.status(400).json({
+        error: 'Password does not meet security requirements',
+        details: passwordValidation.errors,
+      });
+    }
+
+    // Validate policy consents
+    if (!consents?.termsOfService) {
+      return res.status(400).json({
+        error: 'You must accept the Terms of Service',
+      });
+    }
+
+    if (!consents?.privacyPolicy) {
+      return res.status(400).json({
+        error: 'You must accept the Privacy Policy',
+      });
+    }
+
+    if (role === UserRole.LOGISTICS_PARTNER && !consents?.partnerPolicy) {
+      return res.status(400).json({
+        error: 'Logistics Partners must accept the Partner Policy',
       });
     }
 
@@ -45,51 +76,97 @@ export default async function handler(
 
     const hashedPassword = await hashPassword(password);
 
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        phone,
-        role,
-        companyName,
-        gstin,
-        isVerified: false,
-        isActive: true,
-      },
-      select: {
-        id: true,
-        email: true,
-        role: true,
-        companyName: true,
-        isVerified: true,
-        createdAt: true,
-      },
-    });
+    // Get user's IP address and user agent for audit trail
+    const ipAddress = (req.headers['x-forwarded-for'] as string)?.split(',')[0] || 
+                      req.socket.remoteAddress || 
+                      'unknown';
+    const userAgent = req.headers['user-agent'] || 'unknown';
+    const now = new Date();
 
-    if (role === UserRole.LOGISTICS_PARTNER) {
-      await prisma.partnerCapability.create({
-        data: {
-          userId: user.id,
-          serviceTypes: [],
-          dgClasses: [],
-          productCategories: [],
-          serviceCities: [],
-          serviceStates: [],
-          serviceCountries: [],
-          fleetTypes: [],
-          packagingCapabilities: [],
-          certifications: [],
-          warehouseLocations: [],
-        },
-      });
+    // Prepare policy consents
+    const consentRecords = [
+      {
+        policyType: 'TERMS_OF_SERVICE',
+        policyVersion: TERMS_OF_SERVICE.version,
+        accepted: consents.termsOfService,
+        acceptedAt: now,
+        ipAddress,
+        userAgent,
+      },
+      {
+        policyType: 'PRIVACY_POLICY',
+        policyVersion: PRIVACY_POLICY.version,
+        accepted: consents.privacyPolicy,
+        acceptedAt: now,
+        ipAddress,
+        userAgent,
+      },
+    ];
 
-      await prisma.leadWallet.create({
-        data: {
-          userId: user.id,
-          balance: 0,
-        },
+    if (role === UserRole.LOGISTICS_PARTNER && consents.partnerPolicy) {
+      consentRecords.push({
+        policyType: 'PARTNER_POLICY',
+        policyVersion: PARTNER_POLICY.version,
+        accepted: consents.partnerPolicy,
+        acceptedAt: now,
+        ipAddress,
+        userAgent,
       });
     }
+
+    // Create user, policy consents, and partner-specific data in a single transaction
+    const user = await prisma.$transaction(async (tx) => {
+      const newUser = await tx.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          phone,
+          role,
+          companyName,
+          gstin,
+          isVerified: false,
+          isActive: true,
+          policyConsents: {
+            create: consentRecords,
+          },
+        },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          companyName: true,
+          isVerified: true,
+          createdAt: true,
+        },
+      });
+
+      if (role === UserRole.LOGISTICS_PARTNER) {
+        await tx.partnerCapability.create({
+          data: {
+            userId: newUser.id,
+            serviceTypes: [],
+            dgClasses: [],
+            productCategories: [],
+            serviceCities: [],
+            serviceStates: [],
+            serviceCountries: [],
+            fleetTypes: [],
+            packagingCapabilities: [],
+            certifications: [],
+            warehouseLocations: [],
+          },
+        });
+
+        await tx.leadWallet.create({
+          data: {
+            userId: newUser.id,
+            balance: 0,
+          },
+        });
+      }
+
+      return newUser;
+    });
 
     const token = generateToken({
       userId: user.id,

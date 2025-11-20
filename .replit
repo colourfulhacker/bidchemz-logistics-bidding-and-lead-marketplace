@@ -1,7 +1,7 @@
 run = "npm run dev"
 entrypoint = "index.js"
 hidden = [".config", "package-lock.json", ".next", ".swc"]
-modules = ["nodejs-20", "web"]
+modules = ["nodejs-20", "web", "postgresql-16"]
 
 [nix]
 channel = "stable-25_05"
@@ -11,8 +11,8 @@ NEXT_TELEMETRY_DISABLED = "1"
 
 [deployment]
 build = ["npm", "run", "build"]
-run = ["npm", "run", "start"]
-deploymentTarget = "cloudrun"
+run = ["npm", "start"]
+deploymentTarget = "autoscale"
 
 [[ports]]
 localPort = 3000
@@ -29,10 +29,6 @@ externalPort = 3003
 [[ports]]
 localPort = 35143
 externalPort = 5000
-
-[[ports]]
-localPort = 35857
-externalPort = 5173
 
 [[ports]]
 localPort = 36721
