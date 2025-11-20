@@ -5,7 +5,7 @@ import Card from '@/components/ui/Card';
 import { useRouter } from 'next/router';
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const router = useRouter();
   const [stats, setStats] = useState({
     totalQuotes: 0,
