@@ -34,7 +34,7 @@ export default async function handler(
         return res.status(404).json({ error: 'Payment request not found' });
       }
 
-      if (user.role !== UserRole.ADMIN && request.userId !== user.id) {
+      if (user.role !== UserRole.ADMIN && request.userId !== user.userId) {
         return res.status(403).json({ error: 'Access denied' });
       }
 
@@ -83,7 +83,7 @@ export default async function handler(
             where: { id: id as string },
             data: {
               status: PaymentRequestStatus.APPROVED,
-              reviewedBy: user.id,
+              reviewedBy: user.userId,
               reviewedAt: new Date(),
               reviewNotes,
             },
@@ -107,7 +107,7 @@ export default async function handler(
 
           await tx.auditLog.create({
             data: {
-              userId: user.id,
+              userId: user.userId,
               action: 'APPROVE_PAYMENT_REQUEST',
               entity: 'PaymentRequest',
               entityId: paymentRequest.id,
@@ -132,7 +132,7 @@ export default async function handler(
           where: { id: id as string },
           data: {
             status: PaymentRequestStatus.REJECTED,
-            reviewedBy: user.id,
+            reviewedBy: user.userId,
             reviewedAt: new Date(),
             reviewNotes,
           },
@@ -140,7 +140,7 @@ export default async function handler(
 
         await prisma.auditLog.create({
           data: {
-            userId: user.id,
+            userId: user.userId,
             action: 'REJECT_PAYMENT_REQUEST',
             entity: 'PaymentRequest',
             entityId: paymentRequest.id,

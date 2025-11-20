@@ -62,7 +62,7 @@ export async function deductLeadFee(
     throw new Error('Wallet not found');
   }
 
-  const leadCost = calculateLeadCost(pricingParams);
+  const leadCost = await calculateLeadCost(pricingParams);
 
   if (wallet.balance < leadCost) {
     console.error(`Insufficient balance: User ${userId}, Required: ₹${leadCost}, Available: ₹${wallet.balance}`);

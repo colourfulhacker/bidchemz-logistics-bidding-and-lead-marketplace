@@ -35,7 +35,7 @@ export default async function handler(
         return res.status(200).json({ requests });
       } else {
         const requests = await prisma.paymentRequest.findMany({
-          where: { userId: user.id },
+          where: { userId: user.userId },
           orderBy: { createdAt: 'desc' },
         });
 
@@ -67,7 +67,7 @@ export default async function handler(
 
       const paymentRequest = await prisma.paymentRequest.create({
         data: {
-          userId: user.id,
+          userId: user.userId,
           amount,
           paymentMethod,
           referenceNumber,
@@ -79,7 +79,7 @@ export default async function handler(
 
       await prisma.auditLog.create({
         data: {
-          userId: user.id,
+          userId: user.userId,
           action: 'CREATE_PAYMENT_REQUEST',
           entity: 'PaymentRequest',
           entityId: paymentRequest.id,

@@ -51,12 +51,12 @@ localPort = 40569
 externalPort = 6800
 
 [[ports]]
-localPort = 43499
-externalPort = 4200
+localPort = 42633
+externalPort = 8000
 
 [[ports]]
-localPort = 45095
-externalPort = 8000
+localPort = 43499
+externalPort = 4200
 
 [[ports]]
 localPort = 45539
@@ -88,3 +88,8 @@ waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[userenv]
+
+[userenv.shared]
+JWT_SECRET = "bidchemz-jwt-secret-key-2024-secure-token-generation"
