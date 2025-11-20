@@ -37,3 +37,14 @@ export function withAuth(handler: AuthenticatedHandler, allowedRoles?: UserRole[
 export function requireRole(...roles: UserRole[]) {
   return (handler: AuthenticatedHandler) => withAuth(handler, roles);
 }
+
+export async function authenticateUser(req: NextApiRequest): Promise<JWTPayload | null> {
+  const token = extractTokenFromHeader(req.headers.authorization);
+
+  if (!token) {
+    return null;
+  }
+
+  const payload = verifyToken(token);
+  return payload;
+}

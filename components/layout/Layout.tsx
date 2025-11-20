@@ -70,10 +70,51 @@ export function Layout({ children }: LayoutProps) {
                     Wallet
                   </Link>
                   <Link 
+                    href="/partner/recharge" 
+                    className={`text-sm ${router.pathname === '/partner/recharge' ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-gray-900'}`}
+                  >
+                    Recharge
+                  </Link>
+                  <Link 
                     href="/partner/capabilities" 
                     className={`text-sm ${router.pathname === '/partner/capabilities' ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-gray-900'}`}
                   >
                     Capabilities
+                  </Link>
+                </div>
+              )}
+              
+              {user && user.role === 'ADMIN' && (
+                <div className="hidden md:flex items-center space-x-6">
+                  <Link 
+                    href="/admin/dashboard" 
+                    className={`text-sm ${router.pathname === '/admin/dashboard' ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-gray-900'}`}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link 
+                    href="/admin/users" 
+                    className={`text-sm ${router.pathname === '/admin/users' ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-gray-900'}`}
+                  >
+                    Users
+                  </Link>
+                  <Link 
+                    href="/admin/payments" 
+                    className={`text-sm ${router.pathname === '/admin/payments' ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-gray-900'}`}
+                  >
+                    Payments
+                  </Link>
+                  <Link 
+                    href="/admin/pricing" 
+                    className={`text-sm ${router.pathname === '/admin/pricing' ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-gray-900'}`}
+                  >
+                    Pricing
+                  </Link>
+                  <Link 
+                    href="/admin/system" 
+                    className={`text-sm ${router.pathname === '/admin/system' ? 'text-blue-600 font-semibold' : 'text-gray-700 hover:text-gray-900'}`}
+                  >
+                    System
                   </Link>
                 </div>
               )}

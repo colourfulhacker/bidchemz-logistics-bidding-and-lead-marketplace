@@ -121,6 +121,7 @@ model User {
   leadWallet        LeadWallet?
   auditLogs         AuditLog[]
   policyConsents    PolicyConsent[]
+  paymentRequests   PaymentRequest[]
 
   @@index([email])
   @@index([role])
@@ -530,4 +531,55 @@ enum PolicyType {
   TERMS_OF_SERVICE
   PRIVACY_POLICY
   PARTNER_POLICY
+}
+
+enum PaymentRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  UPI
+  CHEQUE
+  CASH
+  ONLINE
+}
+
+// 13. PAYMENT REQUESTS MODEL (Manual Approval System)
+model PaymentRequest {
+  id String @id @default(cuid())
+
+  userId String
+  amount Float
+  currency String @default("INR")
+
+  paymentMethod PaymentMethod
+  status PaymentRequestStatus @default(PENDING)
+
+  // Payment proof
+  referenceNumber String?
+  transactionId String?
+  proofDocument String?
+  paymentDate DateTime?
+
+  // Admin review
+  reviewedBy String?
+  reviewedAt DateTime?
+  reviewNotes String?
+
+  // Request details
+  requestNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
 }

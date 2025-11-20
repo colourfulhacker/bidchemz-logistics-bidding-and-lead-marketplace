@@ -25,7 +25,25 @@ export default function AdminDashboard() {
   }, [user]);
 
   const fetchAdminStats = async () => {
-    setLoading(false);
+    try {
+      const response = await fetch('/api/admin/stats', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setStats({
+          totalQuotes: data.totalQuotes || 0,
+          totalOffers: data.totalOffers || 0,
+          totalShipments: data.totalShipments || 0,
+          activePartners: data.activePartners || 0,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching admin stats:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
