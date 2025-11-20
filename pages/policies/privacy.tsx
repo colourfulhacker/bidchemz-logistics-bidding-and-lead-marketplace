@@ -1,6 +1,6 @@
 import React from 'react';
 import { PRIVACY_POLICY } from '@/lib/policy';
-import Layout from '@/components/Layout';
+import { Layout } from '@/components/layout/Layout';
 import Card from '@/components/ui/Card';
 
 export default function PrivacyPolicyPage() {

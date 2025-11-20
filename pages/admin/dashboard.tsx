@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import Card from '@/components/ui/Card';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 export default function AdminDashboard() {
@@ -81,27 +82,75 @@ export default function AdminDashboard() {
           </Card>
         </div>
 
-        <Card>
-          <h2 className="text-xl font-semibold mb-4">System Management</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer">
-              <h3 className="font-medium">Manage Users</h3>
-              <p className="text-sm text-gray-600">View and manage all users</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="hover:shadow-lg transition-shadow">
+            <h2 className="text-xl font-semibold mb-4 flex items-center">
+              <svg className="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              System Management
+            </h2>
+            <div className="space-y-3">
+              <Link href="/admin/users">
+                <div className="p-4 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 cursor-pointer transition-all group">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 group-hover:text-blue-600">Manage Users</h3>
+                      <p className="text-sm text-gray-600">View and manage all platform users</p>
+                    </div>
+                    <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </Link>
+              <Link href="/admin/payments">
+                <div className="p-4 border border-gray-200 rounded-lg hover:bg-green-50 hover:border-green-300 cursor-pointer transition-all group">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 group-hover:text-green-600">Payment Approvals</h3>
+                      <p className="text-sm text-gray-600">Review and approve wallet recharges</p>
+                    </div>
+                    <svg className="w-5 h-5 text-gray-400 group-hover:text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </Link>
             </div>
-            <div className="p-4 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer">
-              <h3 className="font-medium">Pricing Configuration</h3>
-              <p className="text-sm text-gray-600">Configure lead pricing tiers</p>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow">
+            <h2 className="text-xl font-semibold mb-4 flex items-center">
+              <svg className="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Platform Monitoring
+            </h2>
+            <div className="space-y-3">
+              <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">System Status</span>
+                  <span className="flex items-center text-green-600 text-sm font-semibold">
+                    <span className="w-2 h-2 bg-green-600 rounded-full mr-2"></span>
+                    Operational
+                  </span>
+                </div>
+                <div className="text-xs text-gray-600">All systems running normally</div>
+              </div>
+              <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">Database</span>
+                  <span className="flex items-center text-green-600 text-sm font-semibold">
+                    <span className="w-2 h-2 bg-green-600 rounded-full mr-2"></span>
+                    Connected
+                  </span>
+                </div>
+                <div className="text-xs text-gray-600">PostgreSQL operational</div>
+              </div>
             </div>
-            <div className="p-4 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer">
-              <h3 className="font-medium">Partner Verification</h3>
-              <p className="text-sm text-gray-600">Review and verify partners</p>
-            </div>
-            <div className="p-4 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer">
-              <h3 className="font-medium">System Logs</h3>
-              <p className="text-sm text-gray-600">View audit and webhook logs</p>
-            </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
     </Layout>
   );

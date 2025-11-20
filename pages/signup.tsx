@@ -8,6 +8,7 @@ import Select from '@/components/ui/Select';
 import Card from '@/components/ui/Card';
 import Link from 'next/link';
 import { UserRole } from '@prisma/client';
+import PolicyAcceptanceModal from '@/components/PolicyAcceptanceModal';
 
 export default function Signup() {
   const { signup } = useAuth();
@@ -26,6 +27,7 @@ export default function Signup() {
     privacyPolicy: false,
     partnerPolicy: false,
   });
+  const [activeModal, setActiveModal] = useState<'terms' | 'privacy' | 'partner' | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -199,62 +201,122 @@ export default function Signup() {
             />
 
             <div className="space-y-3 pt-4 border-t border-gray-200">
-              <p className="text-sm font-medium text-gray-700">Required Agreements</p>
+              <p className="text-sm font-medium text-gray-700 mb-3">
+                Required Agreements <span className="text-red-600">*</span>
+              </p>
+              <p className="text-xs text-gray-600 mb-4">
+                You must read and accept each policy before creating your account
+              </p>
               
-              <label className="flex items-start space-x-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="termsOfService"
-                  checked={consents.termsOfService}
-                  onChange={handleCheckboxChange}
-                  className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  required
-                />
-                <span className="text-sm text-gray-700">
-                  I agree to the{' '}
-                  <Link href="/policies/terms" target="_blank" className="text-blue-600 hover:text-blue-700 underline">
-                    Terms of Service
-                  </Link>
-                </span>
-              </label>
+              <div className="space-y-2">
+                <div className={`flex items-center justify-between p-3 border rounded-lg ${consents.termsOfService ? 'bg-green-50 border-green-300' : 'bg-gray-50 border-gray-300'}`}>
+                  <div className="flex items-center space-x-2">
+                    {consents.termsOfService ? (
+                      <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    <span className={`text-sm font-medium ${consents.termsOfService ? 'text-green-800' : 'text-gray-700'}`}>
+                      Terms of Service
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActiveModal('terms')}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    {consents.termsOfService ? 'Review' : 'Read & Accept'}
+                  </button>
+                </div>
 
-              <label className="flex items-start space-x-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="privacyPolicy"
-                  checked={consents.privacyPolicy}
-                  onChange={handleCheckboxChange}
-                  className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  required
-                />
-                <span className="text-sm text-gray-700">
-                  I agree to the{' '}
-                  <Link href="/policies/privacy" target="_blank" className="text-blue-600 hover:text-blue-700 underline">
-                    Privacy Policy
-                  </Link>
-                </span>
-              </label>
+                <div className={`flex items-center justify-between p-3 border rounded-lg ${consents.privacyPolicy ? 'bg-green-50 border-green-300' : 'bg-gray-50 border-gray-300'}`}>
+                  <div className="flex items-center space-x-2">
+                    {consents.privacyPolicy ? (
+                      <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    <span className={`text-sm font-medium ${consents.privacyPolicy ? 'text-green-800' : 'text-gray-700'}`}>
+                      Privacy Policy
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActiveModal('privacy')}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    {consents.privacyPolicy ? 'Review' : 'Read & Accept'}
+                  </button>
+                </div>
 
-              {formData.role === UserRole.LOGISTICS_PARTNER && (
-                <label className="flex items-start space-x-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="partnerPolicy"
-                    checked={consents.partnerPolicy}
-                    onChange={handleCheckboxChange}
-                    className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    required
-                  />
-                  <span className="text-sm text-gray-700">
-                    I agree to the{' '}
-                    <Link href="/policies/partner" target="_blank" className="text-blue-600 hover:text-blue-700 underline">
-                      Logistics Partner Policy
-                    </Link>{' '}
-                    <span className="text-red-600">*</span>
-                  </span>
-                </label>
-              )}
+                {formData.role === UserRole.LOGISTICS_PARTNER && (
+                  <div className={`flex items-center justify-between p-3 border rounded-lg ${consents.partnerPolicy ? 'bg-green-50 border-green-300' : 'bg-amber-50 border-amber-400'}`}>
+                    <div className="flex items-center space-x-2">
+                      {consents.partnerPolicy ? (
+                        <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                      <span className={`text-sm font-medium ${consents.partnerPolicy ? 'text-green-800' : 'text-amber-800'}`}>
+                        Logistics Partner Policy <span className="text-red-600">*Required</span>
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveModal('partner')}
+                      className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      {consents.partnerPolicy ? 'Review' : 'Read & Accept'}
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
+
+            <PolicyAcceptanceModal
+              isOpen={activeModal === 'terms'}
+              policyType="terms"
+              onAccept={() => {
+                setConsents({ ...consents, termsOfService: true });
+                setActiveModal(null);
+              }}
+              onDecline={() => setActiveModal(null)}
+              requireScroll={true}
+            />
+
+            <PolicyAcceptanceModal
+              isOpen={activeModal === 'privacy'}
+              policyType="privacy"
+              onAccept={() => {
+                setConsents({ ...consents, privacyPolicy: true });
+                setActiveModal(null);
+              }}
+              onDecline={() => setActiveModal(null)}
+              requireScroll={true}
+            />
+
+            <PolicyAcceptanceModal
+              isOpen={activeModal === 'partner'}
+              policyType="partner"
+              onAccept={() => {
+                setConsents({ ...consents, partnerPolicy: true });
+                setActiveModal(null);
+              }}
+              onDecline={() => setActiveModal(null)}
+              requireScroll={true}
+            />
 
             <Button
               type="submit"
