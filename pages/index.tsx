@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Layout } from '@/components/layout/Layout';
-import Card from '@/components/ui/Card';
-import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -61,19 +59,21 @@ export default function Home() {
                 India's first B2B reverse-bidding platform. Post your freight requirement once, receive competitive offers from verified logistics partners within minutes.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-                <Link href="/signup">
-                  <button className="group inline-flex items-center justify-center bg-white text-blue-700 hover:bg-blue-50 px-10 py-5 text-lg font-bold shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">
-                    Start Bidding Now
-                    <svg className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </button>
-                </Link>
-                <Link href="/login">
-                  <button className="inline-flex items-center justify-center bg-transparent text-white hover:bg-white hover:bg-opacity-10 px-10 py-5 text-lg font-semibold border-2 border-white rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300">
-                    Sign In
-                  </button>
-                </Link>
+                <button 
+                  onClick={() => router.push('/signup')}
+                  className="group inline-flex items-center justify-center bg-white text-blue-700 hover:bg-blue-50 px-10 py-5 text-lg font-bold shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer"
+                >
+                  Start Bidding Now
+                  <svg className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => router.push('/login')}
+                  className="inline-flex items-center justify-center bg-transparent text-white hover:bg-white hover:bg-opacity-10 px-10 py-5 text-lg font-semibold border-2 border-white rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer"
+                >
+                  Sign In
+                </button>
               </div>
 
               {/* Trust Indicators */}
@@ -244,11 +244,12 @@ export default function Home() {
                     </li>
                   </ul>
                   
-                  <Link href="/signup">
-                    <Button variant="primary" className="w-full py-4 text-lg font-bold">
-                      Start as Trader
-                    </Button>
-                  </Link>
+                  <button 
+                    onClick={() => router.push('/signup')}
+                    className="w-full bg-blue-600 text-white hover:bg-blue-700 py-4 text-lg font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer"
+                  >
+                    Start as Trader
+                  </button>
                 </div>
               </div>
 
@@ -293,11 +294,12 @@ export default function Home() {
                     </li>
                   </ul>
                   
-                  <Link href="/signup">
-                    <Button variant="success" className="w-full py-4 text-lg font-bold">
-                      Join as Partner
-                    </Button>
-                  </Link>
+                  <button 
+                    onClick={() => router.push('/signup')}
+                    className="w-full bg-green-600 text-white hover:bg-green-700 py-4 text-lg font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg focus:outline-none focus:ring-4 focus:ring-green-300 cursor-pointer"
+                  >
+                    Join as Partner
+                  </button>
                 </div>
               </div>
             </div>
@@ -403,16 +405,18 @@ export default function Home() {
               Join hundreds of traders and logistics partners already using BidChemz to streamline their operations
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/signup">
-                <button className="inline-flex items-center justify-center bg-white text-blue-700 hover:bg-blue-50 px-12 py-5 text-lg font-bold shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
-                  Get Started Free
-                </button>
-              </Link>
-              <Link href="/policies">
-                <button className="inline-flex items-center justify-center bg-transparent text-white hover:bg-white hover:bg-opacity-10 px-12 py-5 text-lg font-semibold border-2 border-white rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
-                  View Our Policies
-                </button>
-              </Link>
+              <button 
+                onClick={() => router.push('/signup')}
+                className="inline-flex items-center justify-center bg-white text-blue-700 hover:bg-blue-50 px-12 py-5 text-lg font-bold shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50 cursor-pointer"
+              >
+                Get Started Free
+              </button>
+              <button 
+                onClick={() => router.push('/policies')}
+                className="inline-flex items-center justify-center bg-transparent text-white hover:bg-white hover:bg-opacity-10 px-12 py-5 text-lg font-semibold border-2 border-white rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50 cursor-pointer"
+              >
+                View Our Policies
+              </button>
             </div>
           </div>
         </div>

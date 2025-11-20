@@ -151,6 +151,7 @@ export default function Signup() {
               onChange={handleChange}
               required
               placeholder="you@example.com"
+              autoComplete="email"
             />
 
             <Input
@@ -160,6 +161,7 @@ export default function Signup() {
               value={formData.companyName}
               onChange={handleChange}
               placeholder="Your Company Ltd."
+              autoComplete="organization"
             />
 
             <Input
@@ -169,6 +171,7 @@ export default function Signup() {
               value={formData.phone}
               onChange={handleChange}
               placeholder="+91 XXXXX XXXXX"
+              autoComplete="tel"
             />
 
             <Input
@@ -178,6 +181,7 @@ export default function Signup() {
               value={formData.gstin}
               onChange={handleChange}
               placeholder="22AAAAA0000A1Z5"
+              autoComplete="off"
             />
 
             <PasswordInput
@@ -187,6 +191,7 @@ export default function Signup() {
               onChange={handleChange}
               required
               placeholder="Create a strong password"
+              autoComplete="new-password"
               showRequirements={true}
             />
 
@@ -197,6 +202,7 @@ export default function Signup() {
               onChange={handleChange}
               required
               placeholder="Re-enter your password"
+              autoComplete="new-password"
               error={formData.confirmPassword && formData.password !== formData.confirmPassword ? 'Passwords do not match' : undefined}
             />
 

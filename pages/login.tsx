@@ -65,6 +65,7 @@ export default function Login() {
               onChange={handleChange}
               required
               placeholder="you@example.com"
+              autoComplete="email"
             />
 
             <PasswordInput
@@ -74,6 +75,7 @@ export default function Login() {
               onChange={handleChange}
               required
               placeholder="Enter your password"
+              autoComplete="current-password"
               error={error && error.includes('password') ? error : undefined}
             />
 
