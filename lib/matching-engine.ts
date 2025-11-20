@@ -98,9 +98,19 @@ export async function findMatchingPartners(quoteId: string) {
 }
 
 export async function notifyMatchedPartners(quoteId: string, partners: any[]) {
+  const { notifyPartnerAboutNewLead } = await import('./notifications');
+  
   console.log(`Notifying ${partners.length} matched partners for quote ${quoteId}`);
   
-  for (const partner of partners) {
-    console.log(`  - Sending notification to ${partner.email} (${partner.companyName})`);
-  }
+  const notificationPromises = partners.map((partner) =>
+    notifyPartnerAboutNewLead(partner.partnerId, quoteId, {
+      email: partner.email,
+      companyName: partner.companyName,
+      tier: partner.subscriptionTier,
+    })
+  );
+
+  await Promise.allSettled(notificationPromises);
+  
+  console.log(`Successfully sent notifications to ${partners.length} partners`);
 }

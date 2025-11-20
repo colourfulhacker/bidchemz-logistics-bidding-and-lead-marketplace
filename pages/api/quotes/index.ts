@@ -164,9 +164,19 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         await notifyMatchedPartners(quote.id, matchedPartners);
         
         if (matchedPartners.length > 0) {
+          const { startQuoteTimer } = await import('@/lib/quote-timer');
+          const timerExpiresAt = await startQuoteTimer({
+            quoteId: quote.id,
+            timerDurationMinutes: 60,
+            enableWarnings: true,
+          });
+          
           await prisma.quote.update({
             where: { id: quote.id },
-            data: { status: QuoteStatus.MATCHING },
+            data: { 
+              status: QuoteStatus.MATCHING,
+              expiresAt: timerExpiresAt,
+            },
           });
         }
       } catch (matchError) {
