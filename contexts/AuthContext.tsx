@@ -26,6 +26,11 @@ interface SignupData {
   role: UserRole;
   companyName?: string;
   gstin?: string;
+  consents?: {
+    termsOfService: boolean;
+    privacyPolicy: boolean;
+    partnerPolicy?: boolean;
+  };
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
