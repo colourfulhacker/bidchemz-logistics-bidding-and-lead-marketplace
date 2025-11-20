@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Layout } from '@/components/layout/Layout';
-import { Card, CardHeader, CardBody, CardTitle } from '@/components/ui/Card';
+import Card from '@/components/ui/Card';
+import { CardHeader, CardBody, CardTitle } from '@/components/ui/Card';
 import { FormField } from '@/components/forms/FormField';
 import Button from '@/components/ui/Button';
 import { CountdownTimer } from '@/components/CountdownTimer';
@@ -16,6 +17,8 @@ export default function SubmitOffer() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [estimatedCost, setEstimatedCost] = useState(0);
+  const [pricingBreakdown, setPricingBreakdown] = useState<any>(null);
+  const [loadingPricing, setLoadingPricing] = useState(false);
 
   const [formData, setFormData] = useState({
     price: '',
@@ -74,11 +77,33 @@ export default function SubmitOffer() {
     }
   };
 
-  const calculateEstimatedCost = (quoteData: any) => {
-    let cost = 500;
-    if (quoteData.isHazardous) cost += 300;
-    if (quoteData.quantity > 50) cost += 200;
-    setEstimatedCost(cost);
+  const calculateEstimatedCost = async (quoteData: any) => {
+    setLoadingPricing(true);
+    try {
+      const response = await fetch('/api/calculate-lead-cost', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ quoteId: quoteData.id }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setEstimatedCost(data.estimatedLeadCost);
+        setPricingBreakdown(data);
+      } else {
+        throw new Error(data.error || 'Failed to calculate pricing');
+      }
+    } catch (error) {
+      console.error('Error calculating lead cost:', error);
+      setEstimatedCost(0);
+      setPricingBreakdown(null);
+      alert('Failed to calculate lead cost. Please refresh and try again.');
+    } finally {
+      setLoadingPricing(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -95,6 +120,11 @@ export default function SubmitOffer() {
     e.preventDefault();
 
     if (!quoteId) return;
+
+    if (!pricingBreakdown || estimatedCost === 0) {
+      alert('Lead cost calculation failed. Please refresh the page and try again.');
+      return;
+    }
 
     if (wallet && wallet.balance < estimatedCost) {
       alert(`Insufficient balance. You need ₹${estimatedCost} to submit this offer. Current balance: ₹${wallet.balance}`);
@@ -357,30 +387,57 @@ export default function SubmitOffer() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Estimated Lead Cost</CardTitle>
+                <CardTitle>Lead Cost</CardTitle>
               </CardHeader>
               <CardBody>
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-blue-600 mb-2">
-                    ₹{estimatedCost}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Will be deducted if your offer is selected
-                  </p>
-                  {wallet && (
-                    <div className="pt-4 border-t">
-                      <p className="text-sm text-gray-500">Current Balance</p>
-                      <p className={`text-xl font-semibold ${wallet.balance >= estimatedCost ? 'text-green-600' : 'text-red-600'}`}>
-                        ₹{wallet.balance.toLocaleString()}
+                {loadingPricing ? (
+                  <div className="text-center py-4">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <p className="text-sm text-gray-500 mt-2">Calculating...</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-center">
+                      <p className="text-3xl font-bold text-blue-600 mb-2">
+                        ₹{estimatedCost.toFixed(2)}
                       </p>
-                      {wallet.balance < estimatedCost && (
-                        <p className="text-xs text-red-600 mt-2">
-                          Insufficient balance
-                        </p>
-                      )}
+                      <p className="text-sm text-gray-600 mb-4">
+                        This amount will be deducted upon submission
+                      </p>
                     </div>
-                  )}
-                </div>
+
+                    {pricingBreakdown && pricingBreakdown.breakdown && pricingBreakdown.breakdown.explanation && (
+                      <div className="mt-4 pt-4 border-t">
+                        <p className="text-xs font-semibold text-gray-700 mb-2">Pricing Breakdown:</p>
+                        <div className="space-y-1">
+                          {pricingBreakdown.breakdown.explanation.map((item: string, index: number) => (
+                            <p key={index} className="text-xs text-gray-600">
+                              {item}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {wallet && (
+                      <div className="mt-4 pt-4 border-t">
+                        <p className="text-sm text-gray-500">Current Wallet Balance</p>
+                        <p className={`text-xl font-semibold ${wallet.balance >= estimatedCost ? 'text-green-600' : 'text-red-600'}`}>
+                          ₹{wallet.balance.toLocaleString()}
+                        </p>
+                        {wallet.balance < estimatedCost ? (
+                          <p className="text-xs text-red-600 mt-2 font-medium">
+                            ⚠️ Insufficient balance - Please recharge
+                          </p>
+                        ) : (
+                          <p className="text-xs text-green-600 mt-2">
+                            ✓ Balance after submission: ₹{(wallet.balance - estimatedCost).toFixed(2)}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
               </CardBody>
             </Card>
           </div>

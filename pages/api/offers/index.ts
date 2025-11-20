@@ -1,7 +1,9 @@
 import { NextApiResponse } from 'next';
 import prisma from '@/lib/prisma';
 import { withAuth, AuthenticatedRequest } from '@/lib/middleware';
-import { UserRole, OfferStatus } from '@prisma/client';
+import { UserRole, OfferStatus, SubscriptionTier } from '@prisma/client';
+import { calculateLeadCost } from '@/lib/pricing-engine';
+import { TransactionType, LeadType } from '@prisma/client';
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -105,62 +107,157 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         });
       }
 
-      const wallet = await prisma.leadWallet.findUnique({
+      // Get partner's subscription tier
+      const partnerCapability = await prisma.partnerCapability.findUnique({
         where: { userId: req.user!.userId },
       });
 
-      if (!wallet || wallet.balance <= 0) {
-        return res.status(400).json({
-          error: 'Insufficient lead wallet balance',
-        });
-      }
+      const subscriptionTier = partnerCapability?.subscriptionTier || SubscriptionTier.FREE;
+
+      // Calculate lead cost based on quote details
+      const leadCost = await calculateLeadCost({
+        hazardClass: quote.hazardClass,
+        quantity: quote.quantity,
+        pickupState: quote.pickupState,
+        deliveryState: quote.deliveryState,
+        vehicleType: quote.preferredVehicleType || [],
+        subscriptionTier,
+        isUrgent: false,
+      });
 
       const expiresAt = new Date(offerValidUntil);
 
-      const offer = await prisma.offer.create({
-        data: {
-          quoteId,
-          partnerId: req.user!.userId,
-          price,
-          transitDays,
-          offerValidUntil: new Date(offerValidUntil),
-          pickupAvailableFrom: new Date(pickupAvailableFrom),
-          insuranceIncluded: insuranceIncluded || false,
-          trackingIncluded: trackingIncluded !== false,
-          customsClearance: customsClearance || false,
-          valueAddedServices: valueAddedServices || [],
-          termsAndConditions,
-          remarks,
-          expiresAt,
-        },
-        include: {
-          quote: true,
-          partner: {
-            select: {
-              id: true,
-              email: true,
-              companyName: true,
+      // Use transaction to ensure atomicity - check balance INSIDE transaction to prevent race conditions
+      const result = await prisma.$transaction(async (tx) => {
+        // Get wallet inside transaction with lock
+        const wallet = await tx.leadWallet.findUnique({
+          where: { userId: req.user!.userId },
+        });
+
+        if (!wallet) {
+          throw new Error('Lead wallet not found. Please contact support.');
+        }
+
+        // Check balance inside transaction
+        if (wallet.balance < leadCost) {
+          throw new Error(`Insufficient wallet balance. Required: ₹${leadCost.toFixed(2)}, Available: ₹${wallet.balance.toFixed(2)}`);
+        }
+
+        // Create the offer
+        const newOffer = await tx.offer.create({
+          data: {
+            quoteId,
+            partnerId: req.user!.userId,
+            price,
+            transitDays,
+            offerValidUntil: new Date(offerValidUntil),
+            pickupAvailableFrom: new Date(pickupAvailableFrom),
+            insuranceIncluded: insuranceIncluded || false,
+            trackingIncluded: trackingIncluded !== false,
+            customsClearance: customsClearance || false,
+            valueAddedServices: valueAddedServices || [],
+            termsAndConditions,
+            remarks,
+            expiresAt,
+          },
+          include: {
+            quote: true,
+            partner: {
+              select: {
+                id: true,
+                email: true,
+                companyName: true,
+              },
             },
           },
-        },
-      });
+        });
 
-      await prisma.auditLog.create({
-        data: {
-          userId: req.user!.userId,
-          action: 'CREATE',
-          entity: 'OFFER',
-          entityId: offer.id,
-          changes: { quoteId, price },
-        },
+        // Deduct lead fee from wallet using atomic conditional update to prevent negative balance
+        const updateResult = await tx.leadWallet.updateMany({
+          where: {
+            userId: req.user!.userId,
+            balance: {
+              gte: leadCost, // Only update if balance is sufficient
+            },
+          },
+          data: {
+            balance: {
+              decrement: leadCost,
+            },
+          },
+        });
+
+        // If update failed (count = 0), balance was insufficient (race condition caught)
+        if (updateResult.count === 0) {
+          throw new Error(`Insufficient wallet balance. Another transaction may have reduced your balance. Please check and try again.`);
+        }
+
+        // Fetch updated wallet to get new balance
+        const updatedWallet = await tx.leadWallet.findUnique({
+          where: { userId: req.user!.userId },
+        });
+
+        if (!updatedWallet) {
+          throw new Error('Wallet not found after update');
+        }
+
+        // Create transaction record
+        const leadTransaction = await tx.leadTransaction.create({
+          data: {
+            walletId: wallet.id,
+            offerId: newOffer.id,
+            transactionType: TransactionType.DEBIT,
+            amount: leadCost,
+            description: `Lead fee for submitting offer on quote ${quote.quoteNumber}`,
+            leadId: quoteId,
+            leadType: subscriptionTier === SubscriptionTier.PREMIUM ? LeadType.EXCLUSIVE : LeadType.SHARED,
+            leadCost,
+            creditsDeducted: leadCost,
+            hazardCategory: quote.hazardClass,
+            quantity: quote.quantity,
+            vehicleType: quote.preferredVehicleType?.[0] || null,
+          },
+        });
+
+        // Create audit log
+        await tx.auditLog.create({
+          data: {
+            userId: req.user!.userId,
+            action: 'SUBMIT_OFFER',
+            entity: 'OFFER',
+            entityId: newOffer.id,
+            changes: { 
+              quoteId, 
+              price, 
+              leadCost,
+              walletBalanceBefore: wallet.balance,
+              walletBalanceAfter: updatedWallet.balance,
+            },
+          },
+        });
+
+        return { offer: newOffer, leadCost, newBalance: updatedWallet.balance };
       });
 
       res.status(201).json({
-        offer,
+        offer: result.offer,
         message: 'Offer submitted successfully',
+        leadCostDeducted: result.leadCost,
+        newWalletBalance: result.newBalance,
       });
     } catch (error) {
       console.error('Error creating offer:', error);
+      
+      // Handle specific error cases
+      if (error instanceof Error) {
+        if (error.message.includes('Insufficient wallet balance')) {
+          return res.status(400).json({ error: error.message });
+        }
+        if (error.message.includes('Lead wallet not found')) {
+          return res.status(400).json({ error: error.message });
+        }
+      }
+      
       res.status(500).json({ error: 'Failed to create offer' });
     }
   } else {
