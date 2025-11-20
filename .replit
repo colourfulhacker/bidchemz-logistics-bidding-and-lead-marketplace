@@ -1,7 +1,7 @@
 run = "npm run dev"
 entrypoint = "index.js"
 hidden = [".config", "package-lock.json", ".next", ".swc"]
-modules = ["nodejs-20", "web", "postgresql-16"]
+modules = ["nodejs-20", "web"]
 
 [nix]
 channel = "stable-25_05"
@@ -41,6 +41,10 @@ externalPort = 3001
 [[ports]]
 localPort = 39111
 externalPort = 3002
+
+[[ports]]
+localPort = 39645
+externalPort = 5173
 
 [[ports]]
 localPort = 43499
