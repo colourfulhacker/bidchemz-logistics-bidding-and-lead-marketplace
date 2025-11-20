@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface CountdownTimerProps {
   expiresAt: Date | string;
@@ -12,7 +12,7 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
   showLabel = true,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
-  const [hasExpired, setHasExpired] = useState<boolean>(false);
+  const hasExpiredRef = useRef<boolean>(false);
 
   useEffect(() => {
     const calculateTimeRemaining = () => {
@@ -22,14 +22,17 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
       
       if (remaining <= 0) {
         setTimeRemaining(0);
-        if (!hasExpired && onExpire) {
-          setHasExpired(true);
+        if (!hasExpiredRef.current && onExpire) {
+          hasExpiredRef.current = true;
           onExpire();
         }
         return 0;
+      } else {
+        if (hasExpiredRef.current) {
+          hasExpiredRef.current = false;
+        }
+        return remaining;
       }
-      
-      return remaining;
     };
 
     setTimeRemaining(calculateTimeRemaining());
@@ -44,7 +47,7 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [expiresAt, onExpire, hasExpired]);
+  }, [expiresAt, onExpire]);
 
   const formatTime = (milliseconds: number) => {
     const totalSeconds = Math.floor(milliseconds / 1000);

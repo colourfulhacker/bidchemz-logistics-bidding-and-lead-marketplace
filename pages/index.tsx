@@ -49,14 +49,14 @@ export default function Home() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Link href="/signup">
-                  <Button className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-semibold shadow-xl">
+                  <button className="inline-flex items-center justify-center bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-semibold shadow-xl rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     Get Started Free
-                  </Button>
+                  </button>
                 </Link>
                 <Link href="/login">
-                  <Button className="bg-blue-800 bg-opacity-50 text-white hover:bg-opacity-70 px-8 py-4 text-lg font-semibold border border-blue-400">
+                  <button className="inline-flex items-center justify-center bg-blue-800 bg-opacity-50 text-white hover:bg-opacity-70 px-8 py-4 text-lg font-semibold border border-blue-400 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     Sign In
-                  </Button>
+                  </button>
                 </Link>
               </div>
             </div>

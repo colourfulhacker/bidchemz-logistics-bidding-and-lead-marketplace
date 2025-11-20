@@ -144,7 +144,7 @@ export default function TraderDashboard() {
                                 quote.status === 'SELECTED' ? 'success' :
                                 quote.status === 'OFFERS_AVAILABLE' ? 'primary' :
                                 quote.status === 'MATCHING' ? 'warning' :
-                                'secondary'
+                                'neutral'
                               }>
                                 {quote.status}
                               </Badge>
