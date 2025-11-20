@@ -32,7 +32,21 @@ export default async function handler(
 
     if (!Object.values(UserRole).includes(role)) {
       return res.status(400).json({
-        error: 'Invalid role. Must be TRADER, LOGISTICS_PARTNER, or ADMIN',
+        error: 'Invalid role. Must be TRADER or LOGISTICS_PARTNER',
+      });
+    }
+
+    // SECURITY: Block ADMIN role from public signup - privilege escalation prevention
+    if (role === UserRole.ADMIN) {
+      return res.status(403).json({
+        error: 'Admin accounts cannot be created through public signup. Please contact support.',
+      });
+    }
+
+    // Only allow TRADER and LOGISTICS_PARTNER roles for public signup
+    if (role !== UserRole.TRADER && role !== UserRole.LOGISTICS_PARTNER) {
+      return res.status(403).json({
+        error: 'Only Trader and Logistics Partner accounts can be created through signup',
       });
     }
 

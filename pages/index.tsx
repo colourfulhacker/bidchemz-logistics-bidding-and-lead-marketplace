@@ -46,24 +46,27 @@ export default function Home() {
           
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
             <div className="text-center">
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-600 border border-blue-400 mb-8">
-                <span className="text-sm font-semibold text-white">Trusted by India's Leading Chemical Traders</span>
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-600 bg-opacity-80 border border-blue-400 mb-6">
+                <span className="text-sm font-semibold text-white">Powered by BidChemz Chemical Marketplace</span>
               </div>
               <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
-                Chemical Logistics,<br />
+                India's First<br />
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-cyan-200">
-                  Reverse-Engineered
+                  Chemical Logistics Exchange
                 </span>
               </h1>
-              <p className="text-xl sm:text-2xl text-blue-100 mb-10 max-w-3xl mx-auto leading-relaxed">
-                India's first B2B reverse-bidding platform. Post your freight requirement once, receive competitive offers from verified logistics partners within minutes.
+              <p className="text-xl sm:text-2xl text-blue-100 mb-4 max-w-4xl mx-auto leading-relaxed">
+                Connecting chemical traders with verified logistics partners through reverse bidding. Get competitive quotes for your hazardous and non-hazardous freight in minutes.
+              </p>
+              <p className="text-lg text-blue-200 mb-10 max-w-3xl mx-auto">
+                Built by BidChemz, India's leading chemical marketplace, to solve the logistics challenge for our buyers and sellers
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
                 <button 
                   onClick={() => router.push('/signup')}
                   className="group inline-flex items-center justify-center bg-white text-blue-700 hover:bg-blue-50 px-10 py-5 text-lg font-bold shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer"
                 >
-                  Start Bidding Now
+                  Get Started Free
                   <svg className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
@@ -88,13 +91,13 @@ export default function Home() {
                   <svg className="w-5 h-5 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span>DG Class 1-9 Compliant</span>
+                  <span>DG Class 1-9 Handling</span>
                 </div>
                 <div className="flex items-center">
                   <svg className="w-5 h-5 mr-2 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span>Real-Time Tracking</span>
+                  <span>Real-Time GPS Tracking</span>
                 </div>
               </div>
             </div>
@@ -106,19 +109,91 @@ export default function Home() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                 <div className="group">
                   <div className="text-4xl md:text-5xl font-extrabold text-white mb-2 group-hover:scale-110 transition-transform">500+</div>
-                  <div className="text-blue-300 font-medium">Verified Partners</div>
+                  <div className="text-blue-300 font-medium">Verified Logistics Partners</div>
                 </div>
                 <div className="group">
-                  <div className="text-4xl md:text-5xl font-extrabold text-white mb-2 group-hover:scale-110 transition-transform">15K+</div>
-                  <div className="text-blue-300 font-medium">Shipments Completed</div>
+                  <div className="text-4xl md:text-5xl font-extrabold text-white mb-2 group-hover:scale-110 transition-transform">50K+</div>
+                  <div className="text-blue-300 font-medium">Chemical Traders Served</div>
                 </div>
                 <div className="group">
-                  <div className="text-4xl md:text-5xl font-extrabold text-white mb-2 group-hover:scale-110 transition-transform">All 9</div>
-                  <div className="text-blue-300 font-medium">DG Classes Covered</div>
+                  <div className="text-4xl md:text-5xl font-extrabold text-white mb-2 group-hover:scale-110 transition-transform">1M+</div>
+                  <div className="text-blue-300 font-medium">Tons Transported Safely</div>
                 </div>
                 <div className="group">
-                  <div className="text-4xl md:text-5xl font-extrabold text-white mb-2 group-hover:scale-110 transition-transform">24/7</div>
-                  <div className="text-blue-300 font-medium">Support Available</div>
+                  <div className="text-4xl md:text-5xl font-extrabold text-white mb-2 group-hover:scale-110 transition-transform">₹500Cr+</div>
+                  <div className="text-blue-300 font-medium">Freight Value Processed</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* About BidChemz Platform */}
+        <div className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                  About BidChemz Logistics
+                </div>
+                <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+                  Born from India's Largest Chemical Marketplace
+                </h2>
+                <p className="text-lg text-gray-700 mb-4 leading-relaxed">
+                  BidChemz started as India's premier B2B chemical marketplace, connecting thousands of chemical buyers and sellers across the country. As we grew, we identified a critical gap: <strong>efficient, reliable logistics for chemical freight</strong>.
+                </p>
+                <p className="text-lg text-gray-700 mb-4 leading-relaxed">
+                  Our traders were spending hours calling multiple logistics companies, negotiating prices, and worrying about compliance. We built this logistics exchange to solve that problem once and for all.
+                </p>
+                <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                  Today, BidChemz Logistics seamlessly integrates with our chemical marketplace, giving our existing buyers and sellers instant access to India's largest network of verified chemical logistics providers.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button 
+                    onClick={() => router.push('/signup')}
+                    className="inline-flex items-center justify-center bg-blue-600 text-white hover:bg-blue-700 px-8 py-4 text-base font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer"
+                  >
+                    Join the Platform
+                  </button>
+                </div>
+              </div>
+              <div className="relative">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
+                  <div className="space-y-6">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold text-gray-900 mb-2">Marketplace Integration</h4>
+                        <p className="text-gray-600">Seamlessly book logistics while buying or selling chemicals on BidChemz marketplace</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mr-4">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold text-gray-900 mb-2">Pre-Verified Partners</h4>
+                        <p className="text-gray-600">All logistics partners vetted by BidChemz quality team for compliance and reliability</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold text-gray-900 mb-2">Transparent Pricing</h4>
+                        <p className="text-gray-600">Competitive reverse bidding ensures you always get the best market rates</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -133,20 +208,20 @@ export default function Home() {
                 How It Works
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Simple, transparent, and efficient logistics procurement in three steps
+                Get your chemical freight moving in three simple steps
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Step 1 */}
               <div className="relative">
-                <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-2xl transition-shadow border border-gray-100">
+                <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-2xl transition-shadow border border-gray-100 h-full">
                   <div className="flex items-center justify-center w-16 h-16 bg-blue-600 text-white rounded-full text-2xl font-bold mb-6 mx-auto">
                     1
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Post Your Freight</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Post Your Requirement</h3>
                   <p className="text-gray-600 text-center leading-relaxed">
-                    Submit your chemical freight requirement with detailed specifications including DG class, volume, origin, and destination in our comprehensive 9-section form.
+                    Submit your freight details - cargo type, DG class, weight, origin, destination, and special handling needs. Our comprehensive form captures all requirements.
                   </p>
                 </div>
                 <div className="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2 text-blue-300">
@@ -158,13 +233,13 @@ export default function Home() {
 
               {/* Step 2 */}
               <div className="relative">
-                <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-2xl transition-shadow border border-gray-100">
+                <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-2xl transition-shadow border border-gray-100 h-full">
                   <div className="flex items-center justify-center w-16 h-16 bg-green-600 text-white rounded-full text-2xl font-bold mb-6 mx-auto">
                     2
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Receive Competitive Bids</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Receive Competitive Quotes</h3>
                   <p className="text-gray-600 text-center leading-relaxed">
-                    Our algorithm matches your requirement with qualified logistics partners. Receive multiple competitive quotations within minutes with transparent pricing.
+                    Multiple verified logistics partners bid on your requirement. Review detailed quotes with pricing breakdowns, transit times, and value-added services.
                   </p>
                 </div>
                 <div className="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2 text-blue-300">
@@ -176,13 +251,13 @@ export default function Home() {
 
               {/* Step 3 */}
               <div className="relative">
-                <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-2xl transition-shadow border border-gray-100">
+                <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-2xl transition-shadow border border-gray-100 h-full">
                   <div className="flex items-center justify-center w-16 h-16 bg-purple-600 text-white rounded-full text-2xl font-bold mb-6 mx-auto">
                     3
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Choose & Ship</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Book & Track</h3>
                   <p className="text-gray-600 text-center leading-relaxed">
-                    Compare offers, select the best partner, and track your shipment in real-time. Access documents, POD, and automated alerts throughout the journey.
+                    Select your preferred partner and confirm booking. Track your shipment in real-time with GPS, receive automated updates, and access all documents securely.
                   </p>
                 </div>
               </div>
@@ -190,131 +265,82 @@ export default function Home() {
           </div>
         </div>
 
-        {/* User Type Selection */}
+        {/* Partner Subscription Model */}
         <div className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-                Built for Everyone in the Supply Chain
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Whether you're shipping or delivering, we've got you covered
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-              {/* Trader Card */}
-              <div className="group relative transform hover:scale-105 transition-all duration-300">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl blur-xl opacity-25 group-hover:opacity-50 transition-opacity"></div>
-                <div className="relative bg-white border-2 border-blue-200 group-hover:border-blue-500 rounded-2xl shadow-xl p-10 hover:shadow-2xl transition-all">
-                  <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl mb-6 mx-auto">
-                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-12 border border-green-100">
+              <div className="text-center mb-12">
+                <div className="inline-block bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                  For Logistics Partners
+                </div>
+                <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+                  Grow Your Chemical Logistics Business
+                </h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  Access high-quality leads from BidChemz's 50,000+ chemical traders through our transparent subscription model
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div className="bg-white rounded-xl p-8 shadow-md hover:shadow-xl transition-shadow">
+                  <div className="text-center">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                      <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                    </div>
+                    <h4 className="text-xl font-bold text-gray-900 mb-2">Verified Leads</h4>
+                    <p className="text-gray-600">Access to pre-qualified freight requirements from active chemical traders</p>
                   </div>
-                  <h3 className="text-3xl font-extrabold text-gray-900 mb-4 text-center">For Chemical Traders</h3>
-                  <p className="text-gray-600 mb-8 text-center leading-relaxed">
-                    Save time and money by receiving competitive quotes from multiple verified logistics partners instantly
-                  </p>
-                  
-                  <ul className="space-y-4 mb-10">
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </div>
+                <div className="bg-white rounded-xl p-8 shadow-md hover:shadow-xl transition-shadow">
+                  <div className="text-center">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                      <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span className="text-gray-700 font-medium">Post once, receive multiple offers</span>
-                    </li>
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </div>
+                    <h4 className="text-xl font-bold text-gray-900 mb-2">Prepaid Wallet System</h4>
+                    <p className="text-gray-600">Pay-per-lead model with transparent pricing based on freight value and complexity</p>
+                  </div>
+                </div>
+                <div className="bg-white rounded-xl p-8 shadow-md hover:shadow-xl transition-shadow">
+                  <div className="text-center">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                      <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                       </svg>
-                      <span className="text-gray-700 font-medium">DG Class 1-9 specialized handling</span>
-                    </li>
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-gray-700 font-medium">Real-time shipment tracking</span>
-                    </li>
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-gray-700 font-medium">Secure document management</span>
-                    </li>
-                  </ul>
-                  
-                  <button 
-                    onClick={() => router.push('/signup')}
-                    className="w-full bg-blue-600 text-white hover:bg-blue-700 py-4 text-lg font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer"
-                  >
-                    Start as Trader
-                  </button>
+                    </div>
+                    <h4 className="text-xl font-bold text-gray-900 mb-2">Flexible Tiers</h4>
+                    <p className="text-gray-600">Choose from Free, Standard, or Premium plans with different lead access and discounts</p>
+                  </div>
                 </div>
               </div>
 
-              {/* Partner Card */}
-              <div className="group relative transform hover:scale-105 transition-all duration-300">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl blur-xl opacity-25 group-hover:opacity-50 transition-opacity"></div>
-                <div className="relative bg-white border-2 border-green-200 group-hover:border-green-500 rounded-2xl shadow-xl p-10 hover:shadow-2xl transition-all">
-                  <div className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl mb-6 mx-auto">
-                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-3xl font-extrabold text-gray-900 mb-4 text-center">For Logistics Partners</h3>
-                  <p className="text-gray-600 mb-8 text-center leading-relaxed">
-                    Access verified freight leads and grow your chemical logistics business with qualified opportunities
-                  </p>
-                  
-                  <ul className="space-y-4 mb-10">
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-gray-700 font-medium">Qualified freight leads daily</span>
-                    </li>
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-gray-700 font-medium">Prepaid lead wallet system</span>
-                    </li>
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-gray-700 font-medium">Transparent bidding process</span>
-                    </li>
-                    <li className="flex items-start">
-                      <svg className="w-6 h-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      <span className="text-gray-700 font-medium">Capability-based matching</span>
-                    </li>
-                  </ul>
-                  
-                  <button 
-                    onClick={() => router.push('/signup')}
-                    className="w-full bg-green-600 text-white hover:bg-green-700 py-4 text-lg font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg focus:outline-none focus:ring-4 focus:ring-green-300 cursor-pointer"
-                  >
-                    Join as Partner
-                  </button>
-                </div>
+              <div className="text-center">
+                <button 
+                  onClick={() => router.push('/signup')}
+                  className="inline-flex items-center justify-center bg-green-600 text-white hover:bg-green-700 px-10 py-5 text-lg font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg focus:outline-none focus:ring-4 focus:ring-green-300 cursor-pointer"
+                >
+                  Join as Logistics Partner
+                  <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Features Section */}
+        {/* Features Grid */}
         <div className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-                Why Choose BidChemz?
+                Why BidChemz Logistics?
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Enterprise-grade features built for the chemical logistics industry
+                Enterprise-grade features purpose-built for chemical logistics
               </p>
             </div>
 
@@ -325,21 +351,21 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">DG Compliance</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">DG Class 1-9 Compliance</h3>
                 <p className="text-gray-600">
-                  All partners verified for Dangerous Goods Class 1-9 handling with proper certifications and training
+                  All partners verified for Dangerous Goods handling across all 9 UN classifications with proper certifications
                 </p>
               </div>
 
               <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-shadow border border-gray-100">
                 <div className="flex items-center justify-center w-14 h-14 bg-green-100 rounded-lg mb-6">
                   <svg className="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Transparent Pricing</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">ISO & PESO Certified</h3>
                 <p className="text-gray-600">
-                  No hidden fees. Compare all-inclusive quotes and choose the best value for your requirements
+                  Partners hold ISO 9001, ISO 14001, and PESO certifications ensuring quality and safety standards
                 </p>
               </div>
 
@@ -349,9 +375,9 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Secure Documents</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">AES-256 Document Security</h3>
                 <p className="text-gray-600">
-                  AES-256 encrypted storage for MSDS, SDS, and all shipment documents with role-based access control
+                  Military-grade encryption for MSDS, SDS, and all shipment documents with role-based access control
                 </p>
               </div>
 
@@ -362,9 +388,9 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Live Tracking</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Real-Time GPS Tracking</h3>
                 <p className="text-gray-600">
-                  Real-time GPS tracking of your shipments with automated status updates and milestone notifications
+                  Live shipment tracking with automated status updates, milestone notifications, and ETA predictions
                 </p>
               </div>
 
@@ -374,21 +400,21 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Fast Response</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">24/7 Support</h3>
                 <p className="text-gray-600">
-                  Receive competitive quotations within minutes from multiple qualified logistics partners
+                  Round-the-clock customer support for traders and partners with dedicated account managers for premium tiers
                 </p>
               </div>
 
               <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-shadow border border-gray-100">
                 <div className="flex items-center justify-center w-14 h-14 bg-indigo-100 rounded-lg mb-6">
                   <svg className="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Complete Audit Trail</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Analytics Dashboard</h3>
                 <p className="text-gray-600">
-                  Full audit logs of all transactions, communications, and document access for compliance
+                  Comprehensive insights on freight costs, transit times, partner performance, and spending patterns
                 </p>
               </div>
             </div>
@@ -396,26 +422,23 @@ export default function Home() {
         </div>
 
         {/* CTA Section */}
-        <div className="relative bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6">
+        <div className="py-20 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
               Ready to Transform Your Chemical Logistics?
             </h2>
-            <p className="text-xl text-blue-100 mb-10 max-w-3xl mx-auto">
-              Join hundreds of traders and logistics partners already using BidChemz to streamline their operations
+            <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+              Join thousands of chemical traders and logistics partners using BidChemz to streamline their freight operations
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={() => router.push('/signup')}
-                className="inline-flex items-center justify-center bg-white text-blue-700 hover:bg-blue-50 px-12 py-5 text-lg font-bold shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50 cursor-pointer"
+                className="inline-flex items-center justify-center bg-white text-blue-700 hover:bg-blue-50 px-10 py-5 text-lg font-bold shadow-2xl rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer"
               >
-                Get Started Free
-              </button>
-              <button 
-                onClick={() => router.push('/policies')}
-                className="inline-flex items-center justify-center bg-transparent text-white hover:bg-white hover:bg-opacity-10 px-12 py-5 text-lg font-semibold border-2 border-white rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50 cursor-pointer"
-              >
-                View Our Policies
+                Start Free Today
+                <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
               </button>
             </div>
           </div>
@@ -424,6 +447,5 @@ export default function Home() {
     );
   }
 
-  // Logged-in users see their dashboard
   return null;
 }
