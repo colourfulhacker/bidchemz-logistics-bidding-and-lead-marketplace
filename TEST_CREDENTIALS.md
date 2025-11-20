@@ -45,14 +45,26 @@ Visit: `http://localhost:5000`
 
 ## 📧 Test Account Credentials
 
-### 👤 **TRADER ACCOUNT**
+### 👤 **TRADER ACCOUNTS**
 Test the buyer/seller experience - create freight requests and select offers
 
+#### Trader 1 - ABC Chemicals Ltd
 ```
-Email:    trader@test.com
+Email:    trader1@test.com
 Password: Test@123
 Company:  ABC Chemicals Ltd
+GSTIN:    27AABCT1234A1Z5
 ```
+**Test Data:** 3 quotes (OFFERS_AVAILABLE, MATCHING, EXPIRED)
+
+#### Trader 2 - Global Chemicals Corp
+```
+Email:    trader2@test.com  
+Password: Test@123
+Company:  Global Chemicals Corp
+GSTIN:    29AAGCC9876B1Z5
+```
+**Test Data:** 2 quotes (SELECTED with shipment, OFFERS_AVAILABLE)
 
 **What you can test:**
 - ✅ Create new freight requests (9-section form)
@@ -64,15 +76,52 @@ Company:  ABC Chemicals Ltd
 
 ---
 
-### 🚚 **LOGISTICS PARTNER ACCOUNT**
+### 🚚 **LOGISTICS PARTNER ACCOUNTS**
 Test the logistics provider experience - receive leads and submit competitive offers
 
+#### Partner 1 - Express Logistics India (PREMIUM)
 ```
-Email:    partner@test.com
+Email:    partner1@test.com
 Password: Test@123
-Company:  XYZ Logistics Pvt Ltd
-Wallet:   ₹5,000 (pre-loaded)
+Company:  Express Logistics India
+Wallet:   ₹15,000
+Tier:     PREMIUM
 ```
+**Capabilities:** Pan-India coverage | Class 3, 8, Non-Hazardous | 50 vehicles | Temperature control
+**Test Data:** 2 offers submitted, 1 accepted (active shipment)
+
+#### Partner 2 - SafeTrans Logistics (STANDARD)
+```
+Email:    partner2@test.com
+Password: Test@123
+Company:  SafeTrans Logistics
+Wallet:   ₹8,000
+Tier:     STANDARD
+```
+**Capabilities:** West India | Class 3, 6, 8 | 25 vehicles | PESO certified
+**Test Data:** 2 offers submitted, 1 rejected
+
+#### Partner 3 - ChemMove Solutions (STANDARD)
+```
+Email:    partner3@test.com
+Password: Test@123
+Company:  ChemMove Solutions
+Wallet:   ₹5,000
+Tier:     STANDARD
+```
+**Capabilities:** North India | Class 8, Non-Hazardous | 15 vehicles | Warehouse available
+**Test Data:** 1 offer submitted
+
+#### Partner 4 - National Transport Co (FREE)
+```
+Email:    partner4@test.com
+Password: Test@123
+Company:  National Transport Co
+Wallet:   ₹500 ⚠️ LOW BALANCE
+Tier:     FREE
+```
+**Capabilities:** South India | Non-Hazardous only | 10 vehicles | Limited coverage
+**Test Data:** 1 offer submitted
 
 **What you can test:**
 - ✅ View incoming freight leads
@@ -81,13 +130,6 @@ Wallet:   ₹5,000 (pre-loaded)
 - ✅ Check wallet balance and transaction history
 - ✅ Request wallet recharge (manual approval flow)
 - ✅ Track won leads and shipments
-
-**Pre-configured capabilities:**
-- Service Types: Road Transport, Warehousing
-- DG Classes: Class 3, Class 8
-- Geographic Coverage: Mumbai, Delhi, Bangalore, Gujarat, Karnataka
-- Fleet: Truck, Tanker
-- Certifications: ISO 9001, PESO
 
 ---
 
