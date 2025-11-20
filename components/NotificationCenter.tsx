@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardHeader, CardBody } from '@/components/ui/Card';
+import Card, { CardHeader, CardBody } from '@/components/ui/Card';
 
 interface Notification {
   id: string;
