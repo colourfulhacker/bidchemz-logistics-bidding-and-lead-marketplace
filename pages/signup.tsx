@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/router';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import PasswordInput from '@/components/ui/PasswordInput';
 import Select from '@/components/ui/Select';
 import Card from '@/components/ui/Card';
 import Link from 'next/link';
@@ -177,24 +178,24 @@ export default function Signup() {
               placeholder="22AAAAA0000A1Z5"
             />
 
-            <Input
+            <PasswordInput
               label="Password"
-              type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               required
               placeholder="Create a strong password"
+              showRequirements={true}
             />
 
-            <Input
+            <PasswordInput
               label="Confirm Password"
-              type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               required
               placeholder="Re-enter your password"
+              error={formData.confirmPassword && formData.password !== formData.confirmPassword ? 'Passwords do not match' : undefined}
             />
 
             <div className="space-y-3 pt-4 border-t border-gray-200">
