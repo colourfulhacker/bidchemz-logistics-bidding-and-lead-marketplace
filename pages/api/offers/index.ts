@@ -128,6 +128,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       const expiresAt = new Date(offerValidUntil);
 
       // Use transaction to ensure atomicity - check balance INSIDE transaction to prevent race conditions
+      let paymentFailureData: any = null;
+      
       const result = await prisma.$transaction(async (tx) => {
         // Get wallet inside transaction with lock
         const wallet = await tx.leadWallet.findUnique({
@@ -140,6 +142,15 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
         // Check balance inside transaction
         if (wallet.balance < leadCost) {
+          // Store failure data for webhook after transaction
+          paymentFailureData = {
+            partnerId: req.user!.userId,
+            quoteId,
+            requiredAmount: leadCost,
+            availableBalance: wallet.balance,
+            reason: 'Insufficient wallet balance',
+          };
+          
           throw new Error(`Insufficient wallet balance. Required: ₹${leadCost.toFixed(2)}, Available: ₹${wallet.balance.toFixed(2)}`);
         }
 
@@ -189,6 +200,19 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
         // If update failed (count = 0), balance was insufficient (race condition caught)
         if (updateResult.count === 0) {
+          // Get current balance for webhook
+          const currentWallet = await tx.leadWallet.findUnique({
+            where: { userId: req.user!.userId },
+          });
+          
+          paymentFailureData = {
+            partnerId: req.user!.userId,
+            quoteId,
+            requiredAmount: leadCost,
+            availableBalance: currentWallet?.balance || 0,
+            reason: 'Insufficient wallet balance (race condition)',
+          };
+          
           throw new Error(`Insufficient wallet balance. Another transaction may have reduced your balance. Please check and try again.`);
         }
 
@@ -237,7 +261,44 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         });
 
         return { offer: newOffer, leadCost, newBalance: updatedWallet.balance };
+      }).catch(async (error) => {
+        // Send LEAD_PAYMENT_FAILED webhook if payment failed (outside transaction)
+        if (paymentFailureData) {
+          try {
+            const { sendWebhook } = await import('@/lib/webhook');
+            await sendWebhook(
+              process.env.WEBHOOK_URL || 'http://localhost:5000/api/webhooks',
+              'LEAD_PAYMENT_FAILED',
+              paymentFailureData
+            ).catch(err => console.error('Webhook error:', err));
+          } catch (webhookError) {
+            console.error('Error sending webhook:', webhookError);
+          }
+        }
+        throw error;
       });
+
+      // Trigger QUOTE_OFFERS_AVAILABLE webhook
+      try {
+        const { sendWebhook } = await import('@/lib/webhook');
+        const offersCount = await prisma.offer.count({
+          where: { quoteId, status: OfferStatus.PENDING },
+        });
+        
+        await sendWebhook(
+          process.env.WEBHOOK_URL || 'http://localhost:5000/api/webhooks',
+          'QUOTE_OFFERS_AVAILABLE',
+          {
+            quoteId,
+            quoteNumber: quote.quoteNumber,
+            offersCount,
+            latestOfferId: result.offer.id,
+            latestOfferPrice: result.offer.price,
+          }
+        ).catch(err => console.error('Webhook error:', err));
+      } catch (webhookError) {
+        console.error('Error sending webhook:', webhookError);
+      }
 
       res.status(201).json({
         offer: result.offer,

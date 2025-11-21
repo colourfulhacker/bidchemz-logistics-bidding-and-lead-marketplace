@@ -160,6 +160,24 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       });
 
       try {
+        const { sendWebhook } = await import('@/lib/webhook');
+        await sendWebhook(
+          process.env.WEBHOOK_URL || 'http://localhost:5000/api/webhooks',
+          'QUOTE_REQUESTED',
+          {
+            quoteId: quote.id,
+            quoteNumber: quote.quoteNumber,
+            traderId: quote.traderId,
+            cargoName: quote.cargoName,
+            pickupCity: quote.pickupCity,
+            deliveryCity: quote.deliveryCity,
+          }
+        ).catch(err => console.error('Webhook error:', err));
+      } catch (webhookError) {
+        console.error('Error sending webhook:', webhookError);
+      }
+
+      try {
         const matchedPartners = await findMatchingPartners(quote.id);
         await notifyMatchedPartners(quote.id, matchedPartners);
         

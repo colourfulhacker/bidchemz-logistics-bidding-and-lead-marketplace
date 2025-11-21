@@ -153,6 +153,55 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       },
     });
 
+    // Trigger webhooks for offer selection, lead assignment, and shipment booking
+    try {
+      const { sendWebhook } = await import('@/lib/webhook');
+      
+      // QUOTE_OFFER_SELECTED webhook
+      await sendWebhook(
+        process.env.WEBHOOK_URL || 'http://localhost:5000/api/webhooks',
+        'QUOTE_OFFER_SELECTED',
+        {
+          quoteId: offer.quoteId,
+          quoteNumber: offer.quote.quoteNumber,
+          offerId: offer.id,
+          partnerId: offer.partnerId,
+          partnerCompany: offer.partner.companyName,
+          offerPrice: offer.price,
+          selectedBy: req.user!.userId,
+        }
+      ).catch(err => console.error('Webhook error:', err));
+
+      // LEAD_ASSIGNED webhook
+      await sendWebhook(
+        process.env.WEBHOOK_URL || 'http://localhost:5000/api/webhooks',
+        'LEAD_ASSIGNED',
+        {
+          leadId: result.leadTransaction.leadId,
+          partnerId: offer.partnerId,
+          quoteId: offer.quoteId,
+          leadCost,
+          leadType: result.leadTransaction.leadType,
+          transactionId: result.leadTransaction.id,
+        }
+      ).catch(err => console.error('Webhook error:', err));
+
+      // SHIPMENT_BOOKED webhook
+      await sendWebhook(
+        process.env.WEBHOOK_URL || 'http://localhost:5000/api/webhooks',
+        'SHIPMENT_BOOKED',
+        {
+          shipmentId: result.shipment.id,
+          shipmentNumber: result.shipment.shipmentNumber,
+          quoteId: offer.quoteId,
+          offerId: offer.id,
+          partnerId: offer.partnerId,
+        }
+      ).catch(err => console.error('Webhook error:', err));
+    } catch (webhookError) {
+      console.error('Error sending webhooks:', webhookError);
+    }
+
     res.status(200).json({
       message: 'Offer selected successfully',
       shipment: result.shipment,

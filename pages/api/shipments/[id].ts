@@ -33,6 +33,27 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         },
       });
 
+      // Trigger SHIPMENT_STATUS_UPDATED webhook if status changed
+      if (status) {
+        try {
+          const { sendWebhook } = await import('@/lib/webhook');
+          await sendWebhook(
+            process.env.WEBHOOK_URL || 'http://localhost:5000/api/webhooks',
+            'SHIPMENT_STATUS_UPDATED',
+            {
+              shipmentId: updatedShipment.id,
+              shipmentNumber: updatedShipment.shipmentNumber,
+              newStatus: status,
+              currentLocation: currentLocation || updatedShipment.currentLocation,
+              quoteId: updatedShipment.quoteId,
+              partnerId: updatedShipment.offer.partnerId,
+            }
+          ).catch(err => console.error('Webhook error:', err));
+        } catch (webhookError) {
+          console.error('Error sending webhook:', webhookError);
+        }
+      }
+
       res.status(200).json({ shipment: updatedShipment });
     } catch (error) {
       console.error('Error updating shipment:', error);
