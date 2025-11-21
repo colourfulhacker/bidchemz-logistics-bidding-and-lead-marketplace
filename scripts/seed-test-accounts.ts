@@ -977,92 +977,65 @@ async function main() {
   console.log('\n💳 Creating Payment Requests...');
 
   // Payment requests from partners for wallet top-up
-  await prisma.paymentRequest.upsert({
-    where: { id: 'payreq-1' },
-    update: {},
-    create: {
+  const paymentRequests = [
+    {
       id: 'payreq-1',
       userId: partner1.id,
       amount: 5000,
-      currency: 'INR',
-      paymentMethod: 'BANK_TRANSFER' as any,
-      status: 'APPROVED' as any,
+      paymentMethod: PaymentMethod.BANK_TRANSFER,
+      status: PaymentRequestStatus.APPROVED,
       referenceNumber: 'TXN20241121001',
       transactionId: 'TXN_APPROVED_001',
       paymentDate: new Date(),
       reviewedBy: admin.id,
       reviewedAt: new Date(),
       reviewNotes: 'Verified and approved'
-    }
-  });
-
-  await prisma.paymentRequest.upsert({
-    where: { id: 'payreq-2' },
-    update: {},
-    create: {
+    },
+    {
       id: 'payreq-2',
       userId: partner2.id,
       amount: 3000,
-      currency: 'INR',
-      paymentMethod: 'UPI' as any,
-      status: 'PENDING' as any,
+      paymentMethod: PaymentMethod.UPI,
+      status: PaymentRequestStatus.PENDING,
       referenceNumber: 'TXN20241121002',
       transactionId: null,
       paymentDate: null,
       reviewedBy: null,
       reviewedAt: null,
       reviewNotes: null
-    }
-  });
-
-  await prisma.paymentRequest.upsert({
-    where: { id: 'payreq-3' },
-    update: {},
-    create: {
+    },
+    {
       id: 'payreq-3',
       userId: partner3.id,
       amount: 2000,
-      currency: 'INR',
-      paymentMethod: 'CARD' as any,
-      status: 'APPROVED' as any,
+      paymentMethod: PaymentMethod.CHEQUE,
+      status: PaymentRequestStatus.APPROVED,
       referenceNumber: 'TXN20241121003',
       transactionId: 'TXN_APPROVED_002',
       paymentDate: new Date(),
       reviewedBy: admin.id,
       reviewedAt: new Date(),
       reviewNotes: 'Card payment verified'
-    }
-  });
-
-  await prisma.paymentRequest.upsert({
-    where: { id: 'payreq-4' },
-    update: {},
-    create: {
+    },
+    {
       id: 'payreq-4',
       userId: partner4.id,
       amount: 1500,
-      currency: 'INR',
-      paymentMethod: 'BANK_TRANSFER' as any,
-      status: 'REJECTED' as any,
+      paymentMethod: PaymentMethod.BANK_TRANSFER,
+      status: PaymentRequestStatus.REJECTED,
       referenceNumber: 'TXN20241121004',
       transactionId: null,
       paymentDate: null,
       reviewedBy: admin.id,
       reviewedAt: new Date(),
       reviewNotes: 'Insufficient documentation provided'
-    }
-  });
-
-  await prisma.paymentRequest.upsert({
-    where: { id: 'payreq-5' },
-    update: {},
-    create: {
+    },
+    {
       id: 'payreq-5',
       userId: partner1.id,
       amount: 7500,
-      currency: 'INR',
-      paymentMethod: 'BANK_TRANSFER' as any,
-      status: 'PENDING' as any,
+      paymentMethod: PaymentMethod.BANK_TRANSFER,
+      status: PaymentRequestStatus.PENDING,
       referenceNumber: 'TXN20241121005',
       transactionId: null,
       paymentDate: null,
@@ -1070,9 +1043,17 @@ async function main() {
       reviewedAt: null,
       reviewNotes: null
     }
-  });
+  ];
 
-  console.log('✅ Payment requests created (3 APPROVED, 2 PENDING, 1 REJECTED)');
+  for (const pr of paymentRequests) {
+    await prisma.paymentRequest.upsert({
+      where: { id: pr.id },
+      update: {},
+      create: { ...pr, currency: 'INR' }
+    });
+  }
+
+  console.log('✅ Payment requests created (2 APPROVED, 2 PENDING, 1 REJECTED)');
 
   console.log('\n✅ Database seeding completed successfully!');
   console.log('\n' + '='.repeat(70));
