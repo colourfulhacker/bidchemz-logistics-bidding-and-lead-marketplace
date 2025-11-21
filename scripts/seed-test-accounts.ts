@@ -610,9 +610,147 @@ async function main() {
   });
   console.log('✅ Shipment 1: Quote 3 - IN_TRANSIT');
 
+  console.log('\n📦 Creating Additional Sample Quotes for Dashboard View...');
+
+  // More quotes to populate dashboard and UI
+  const additionalQuotes = [];
+  const quoteConfigs = [
+    { name: 'Hydrochloric Acid', hazard: HazardClass.CLASS_8, city1: 'Visakhapatnam', city2: 'Kolkata', qty: 12, trader: trader1 },
+    { name: 'Propylene Glycol', hazard: HazardClass.NON_HAZARDOUS, city1: 'Jaipur', city2: 'Lucknow', qty: 30, trader: trader2 },
+    { name: 'Nitric Acid', hazard: HazardClass.CLASS_8, city1: 'Nagpur', city2: 'Indore', qty: 18, trader: trader1 },
+    { name: 'Methanol', hazard: HazardClass.CLASS_3, city1: 'Bhopal', city2: 'Guwahati', qty: 22, trader: trader2 },
+    { name: 'Phosphoric Acid', hazard: HazardClass.CLASS_8, city1: 'Kochi', city2: 'Coimbatore', qty: 16, trader: trader1 },
+    { name: 'Toluene', hazard: HazardClass.CLASS_3, city1: 'Lucknow', city2: 'Kanpur', qty: 25, trader: trader2 },
+    { name: 'Calcium Carbonate', hazard: HazardClass.NON_HAZARDOUS, city1: 'Ludhiana', city2: 'Amritsar', qty: 40, trader: trader1 },
+    { name: 'Caustic Soda', hazard: HazardClass.CLASS_8, city1: 'Vadodara', city2: 'Rajkot', qty: 20, trader: trader2 },
+    { name: 'Xylene', hazard: HazardClass.CLASS_3, city1: 'Nashik', city2: 'Aurangabad', qty: 14, trader: trader1 },
+    { name: 'Benzene', hazard: HazardClass.CLASS_3, city1: 'Kolkata', city2: 'Patna', qty: 11, trader: trader2 },
+  ];
+
+  for (let i = 0; i < quoteConfigs.length; i++) {
+    const config = quoteConfigs[i];
+    const statuses = [QuoteStatus.DRAFT, QuoteStatus.SUBMITTED, QuoteStatus.MATCHING, QuoteStatus.OFFERS_AVAILABLE];
+    const status = statuses[i % statuses.length];
+    
+    const newQuote = await prisma.quote.create({
+      data: {
+        quoteNumber: `BID-2025-${String(6 + i).padStart(3, '0')}`,
+        traderId: config.trader.id,
+        status,
+        cargoName: config.name,
+        quantity: config.qty,
+        quantityUnit: 'MT',
+        isHazardous: config.hazard !== HazardClass.NON_HAZARDOUS,
+        hazardClass: config.hazard,
+        cargoReadyDate: new Date(now.getTime() + (i % 7) * 24 * 60 * 60 * 1000),
+        pickupAddress: `Industrial Zone ${i}, Warehouse ${i}`,
+        pickupCity: config.city1,
+        pickupState: ['Maharashtra', 'Gujarat', 'West Bengal', 'Madhya Pradesh', 'Andhra Pradesh'][i % 5],
+        pickupPincode: String(400000 + i * 100),
+        pickupCountry: 'India',
+        deliveryAddress: `Distribution Center ${i}`,
+        deliveryCity: config.city2,
+        deliveryState: ['Uttar Pradesh', 'Rajasthan', 'Punjab', 'Tamil Nadu', 'Bihar'][i % 5],
+        deliveryPincode: String(560000 + i * 100),
+        deliveryCountry: 'India',
+        packagingType: [PackagingType.DRUMS, PackagingType.BAGS, PackagingType.TANKER, PackagingType.ISO_TANK][i % 4],
+        temperatureControlled: i % 3 === 0,
+        preferredVehicleType: [VehicleType.TRUCK, VehicleType.TANKER, VehicleType.ISO_TANK],
+        insuranceRequired: config.hazard !== HazardClass.NON_HAZARDOUS,
+        msdsRequired: config.hazard !== HazardClass.NON_HAZARDOUS,
+        paymentTerms: ['Net 30 days', 'Advance payment', 'Cash on delivery', 'Net 15 days'][i % 4],
+        submittedAt: new Date(now.getTime() - (i * 2 + 1) * 60 * 60 * 1000),
+        expiresAt: new Date(now.getTime() + (7 - i % 7) * 24 * 60 * 60 * 1000),
+      },
+    });
+    additionalQuotes.push(newQuote);
+  }
+  console.log(`✅ Created ${additionalQuotes.length} additional quotes with various statuses`);
+
+  console.log('\n💼 Creating Additional Offers for Quotes...');
+  for (let i = 0; i < additionalQuotes.length; i++) {
+    const quote = additionalQuotes[i];
+    const partners = [partner1, partner2, partner3, partner4];
+    const numOffers = (i % 3) + 1; // 1-3 offers per quote
+    
+    for (let j = 0; j < numOffers; j++) {
+      const partner = partners[(i + j) % partners.length];
+      const basePrice = 50000 + (i * 3000) + (j * 5000);
+      const status = j === 0 ? OfferStatus.PENDING : (j === 1 ? OfferStatus.PENDING : OfferStatus.PENDING);
+      
+      await prisma.offer.create({
+        data: {
+          quoteId: quote.id,
+          partnerId: partner.id,
+          status,
+          price: basePrice + (Math.random() * 10000),
+          currency: 'INR',
+          transitDays: 2 + (i % 4),
+          offerValidUntil: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+          pickupAvailableFrom: new Date(now.getTime() + (i % 3) * 24 * 60 * 60 * 1000),
+          insuranceIncluded: i % 2 === 0,
+          trackingIncluded: true,
+          valueAddedServices: ['Real-time tracking', 'SMS updates', 'Photo delivery proof'][j % 3 === 0 ? 0 : j === 1 ? 1 : 2] ? ['Real-time tracking', 'SMS updates', 'Photo delivery proof'][(j % 3)] : [],
+          expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+        },
+      });
+    }
+  }
+  console.log(`✅ Created multiple offers for additional quotes`);
+
+  console.log('\n🚛 Creating Additional Shipments with Various Statuses...');
+  
+  const shipment2 = await prisma.shipment.create({
+    data: {
+      shipmentNumber: 'SHIP-2025-002',
+      quoteId: quote1.id,
+      offerId: offer1.id,
+      status: ShipmentStatus.BOOKED,
+      estimatedDelivery: new Date(now.getTime() + 48 * 60 * 60 * 1000),
+      statusUpdates: [
+        { timestamp: new Date(now.getTime() - 2 * 60 * 60 * 1000), status: 'BOOKED', location: 'Mumbai' },
+      ],
+      trackingEvents: [
+        { timestamp: new Date(now.getTime() - 2 * 60 * 60 * 1000), event: 'Shipment booked', location: 'Mumbai' },
+      ],
+    },
+  });
+
+  const shipment3 = await prisma.shipment.create({
+    data: {
+      shipmentNumber: 'SHIP-2025-003',
+      quoteId: quote4.id,
+      offerId: offer6.id,
+      status: ShipmentStatus.DELIVERED,
+      currentLocation: 'Chennai',
+      actualPickupDate: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000),
+      actualDeliveryDate: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
+      estimatedDelivery: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
+      statusUpdates: [
+        { timestamp: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000), status: 'PICKUP_SCHEDULED', location: 'Bangalore' },
+        { timestamp: new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000), status: 'IN_TRANSIT', location: 'Bangalore' },
+        { timestamp: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), status: 'IN_TRANSIT', location: 'Vellore' },
+        { timestamp: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000), status: 'DELIVERED', location: 'Chennai' },
+      ],
+      trackingEvents: [
+        { timestamp: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000), event: 'Cargo picked up', location: 'Bangalore' },
+        { timestamp: new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000), event: 'Vehicle departed', location: 'Bangalore' },
+        { timestamp: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), event: 'Vehicle stopped for rest', location: 'Vellore' },
+        { timestamp: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000), event: 'Delivered to recipient', location: 'Chennai' },
+      ],
+      deliveryNotes: 'Cargo delivered in good condition. Signed by warehouse manager.',
+    },
+  });
+
+  console.log('✅ Shipment 2: BOOKED status');
+  console.log('✅ Shipment 3: DELIVERED status');
+
   console.log('\n💳 Creating Lead Transactions...');
 
   const wallet1 = await prisma.leadWallet.findUnique({ where: { userId: partner1.id } });
+  const wallet2 = await prisma.leadWallet.findUnique({ where: { userId: partner2.id } });
+  const wallet3 = await prisma.leadWallet.findUnique({ where: { userId: partner3.id } });
+
   if (wallet1) {
     await prisma.leadTransaction.create({
       data: {
@@ -631,7 +769,7 @@ async function main() {
         vehicleType: VehicleType.TRUCK,
       },
     });
-    console.log('✅ Transaction: Partner 1 - Lead deduction ₹500 for selected offer');
+    console.log('✅ Transaction: Partner 1 - Lead deduction ₹500');
 
     await prisma.leadTransaction.create({
       data: {
@@ -644,6 +782,73 @@ async function main() {
       },
     });
     console.log('✅ Transaction: Partner 1 - Wallet recharge ₹10,000');
+
+    // Additional lead deductions
+    await prisma.leadTransaction.create({
+      data: {
+        walletId: wallet1.id,
+        transactionType: TransactionType.DEBIT,
+        amount: -750,
+        description: 'Lead cost for Quote BID-2025-006',
+        leadCost: 750,
+        hazardCategory: HazardClass.CLASS_3,
+        routeDistance: 600,
+        quantity: 22,
+      },
+    });
+    console.log('✅ Transaction: Partner 1 - Lead deduction ₹750');
+  }
+
+  if (wallet2) {
+    await prisma.leadTransaction.create({
+      data: {
+        walletId: wallet2.id,
+        transactionType: TransactionType.DEBIT,
+        amount: -600,
+        description: 'Lead cost for Quote BID-2025-007',
+        leadCost: 600,
+        hazardCategory: HazardClass.CLASS_8,
+        routeDistance: 350,
+      },
+    });
+    console.log('✅ Transaction: Partner 2 - Lead deduction ₹600');
+
+    await prisma.leadTransaction.create({
+      data: {
+        walletId: wallet2.id,
+        transactionType: TransactionType.REFUND,
+        amount: 500,
+        description: 'Refund for cancelled quote BID-2025-004',
+      },
+    });
+    console.log('✅ Transaction: Partner 2 - Refund ₹500');
+  }
+
+  if (wallet3) {
+    await prisma.leadTransaction.create({
+      data: {
+        walletId: wallet3.id,
+        transactionType: TransactionType.RECHARGE,
+        amount: 8000,
+        description: 'Wallet recharge via UPI',
+        invoiceId: 'INV-2025-0002',
+        gstAmount: 1440,
+      },
+    });
+    console.log('✅ Transaction: Partner 3 - Wallet recharge ₹8,000');
+
+    await prisma.leadTransaction.create({
+      data: {
+        walletId: wallet3.id,
+        transactionType: TransactionType.DEBIT,
+        amount: -400,
+        description: 'Lead cost for Quote BID-2025-008',
+        leadCost: 400,
+        hazardCategory: HazardClass.NON_HAZARDOUS,
+        routeDistance: 200,
+      },
+    });
+    console.log('✅ Transaction: Partner 3 - Lead deduction ₹400');
   }
 
   console.log('\n📝 Creating Policy Consents...');
