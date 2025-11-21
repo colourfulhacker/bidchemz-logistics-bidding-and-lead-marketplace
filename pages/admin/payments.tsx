@@ -97,14 +97,14 @@ export default function AdminPayments() {
   };
 
   const columns = [
-    { key: 'id', header: 'Request ID', render: (row: any) => row.id.slice(0, 8) },
+    { key: 'id', header: 'Request ID', render: (row: any) => (row.id ? row.id.slice(0, 8) : 'N/A') },
     {
       key: 'user',
       header: 'Partner',
       render: (row: any) => (
         <div>
-          <div className="font-medium">{row.user.companyName || row.user.email}</div>
-          <div className="text-sm text-gray-500">{row.user.email}</div>
+          <div className="font-medium">{row.user?.companyName || row.user?.email || 'Unknown'}</div>
+          <div className="text-sm text-gray-500">{row.user?.email || 'N/A'}</div>
         </div>
       ),
     },
@@ -113,14 +113,14 @@ export default function AdminPayments() {
       header: 'Amount',
       render: (row: any) => (
         <span className="font-semibold text-green-600">
-          ₹{row.amount.toLocaleString()}
+          ₹{(row.amount || 0).toLocaleString()}
         </span>
       ),
     },
     {
       key: 'paymentMethod',
       header: 'Method',
-      render: (row: any) => row.paymentMethod.replace(/_/g, ' '),
+      render: (row: any) => (row.paymentMethod ? row.paymentMethod.replace(/_/g, ' ') : 'N/A'),
     },
     {
       key: 'referenceNumber',
@@ -130,7 +130,7 @@ export default function AdminPayments() {
     {
       key: 'createdAt',
       header: 'Submitted',
-      render: (row: any) => new Date(row.createdAt).toLocaleDateString(),
+      render: (row: any) => (row.createdAt ? new Date(row.createdAt).toLocaleDateString() : 'N/A'),
     },
     {
       key: 'status',
@@ -141,7 +141,7 @@ export default function AdminPayments() {
           APPROVED: 'green',
           REJECTED: 'red',
         };
-        return <Badge variant={statusColors[row.status]}>{row.status}</Badge>;
+        return <Badge variant={statusColors[row.status] || 'neutral'}>{row.status || 'UNKNOWN'}</Badge>;
       },
     },
     {

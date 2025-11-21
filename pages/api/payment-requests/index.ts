@@ -36,6 +36,16 @@ export default async function handler(
       } else {
         const requests = await prisma.paymentRequest.findMany({
           where: { userId: user.userId },
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                companyName: true,
+                role: true,
+              },
+            },
+          },
           orderBy: { createdAt: 'desc' },
         });
 
