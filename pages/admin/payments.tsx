@@ -28,10 +28,14 @@ export default function AdminPayments() {
   }, [user, token]);
 
   useEffect(() => {
+    if (!requests || requests.length === 0) {
+      setFilteredRequests([]);
+      return;
+    }
     if (filter === 'ALL') {
       setFilteredRequests(requests);
     } else {
-      setFilteredRequests(requests.filter((r) => r.status === filter));
+      setFilteredRequests(requests.filter((r) => r?.status === filter));
     }
   }, [filter, requests]);
 
@@ -199,25 +203,25 @@ export default function AdminPayments() {
               variant={filter === 'PENDING' ? 'primary' : 'secondary'}
               onClick={() => setFilter('PENDING')}
             >
-              Pending ({requests.filter((r) => r.status === 'PENDING').length})
+              Pending ({requests?.filter((r) => r?.status === 'PENDING')?.length || 0})
             </Button>
             <Button
               variant={filter === 'APPROVED' ? 'primary' : 'secondary'}
               onClick={() => setFilter('APPROVED')}
             >
-              Approved ({requests.filter((r) => r.status === 'APPROVED').length})
+              Approved ({requests?.filter((r) => r?.status === 'APPROVED')?.length || 0})
             </Button>
             <Button
               variant={filter === 'REJECTED' ? 'primary' : 'secondary'}
               onClick={() => setFilter('REJECTED')}
             >
-              Rejected ({requests.filter((r) => r.status === 'REJECTED').length})
+              Rejected ({requests?.filter((r) => r?.status === 'REJECTED')?.length || 0})
             </Button>
             <Button
               variant={filter === 'ALL' ? 'primary' : 'secondary'}
               onClick={() => setFilter('ALL')}
             >
-              All ({requests.length})
+              All ({requests?.length || 0})
             </Button>
           </div>
 
@@ -242,26 +246,26 @@ export default function AdminPayments() {
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-gray-600">Partner:</span>
-                  <div className="font-medium">{selectedRequest.user.companyName}</div>
+                  <div className="font-medium">{selectedRequest?.user?.companyName || selectedRequest?.user?.email || 'Unknown'}</div>
                 </div>
                 <div>
                   <span className="text-gray-600">Amount:</span>
                   <div className="font-semibold text-green-600">
-                    ₹{selectedRequest.amount.toLocaleString()}
+                    ₹{(selectedRequest?.amount || 0).toLocaleString()}
                   </div>
                 </div>
                 <div>
                   <span className="text-gray-600">Method:</span>
                   <div className="font-medium">
-                    {selectedRequest.paymentMethod.replace(/_/g, ' ')}
+                    {(selectedRequest?.paymentMethod || 'N/A').replace(/_/g, ' ')}
                   </div>
                 </div>
                 <div>
                   <span className="text-gray-600">Reference:</span>
-                  <div className="font-medium">{selectedRequest.referenceNumber || '-'}</div>
+                  <div className="font-medium">{selectedRequest?.referenceNumber || '-'}</div>
                 </div>
               </div>
-              {selectedRequest.requestNotes && (
+              {selectedRequest?.requestNotes && (
                 <div className="mt-3 pt-3 border-t">
                   <span className="text-gray-600">Request Notes:</span>
                   <div className="mt-1">{selectedRequest.requestNotes}</div>
