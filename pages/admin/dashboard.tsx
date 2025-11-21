@@ -13,6 +13,9 @@ export default function AdminDashboard() {
     totalOffers: 0,
     totalShipments: 0,
     activePartners: 0,
+    totalTraders: 0,
+    platformGMV: 0,
+    pendingPayments: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +41,9 @@ export default function AdminDashboard() {
           totalOffers: data.totalOffers || 0,
           totalShipments: data.totalShipments || 0,
           activePartners: data.activePartners || 0,
+          totalTraders: data.totalTraders || 0,
+          platformGMV: data.platformGMV || 0,
+          pendingPayments: data.pendingPayments || 0,
         });
       }
     } catch (error) {
@@ -60,25 +66,42 @@ export default function AdminDashboard() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Total Quotes</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <Card className="border-t-4 border-t-blue-600">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">📋 Total Quotes</h3>
             <p className="text-3xl font-bold text-blue-600">{stats.totalQuotes}</p>
           </Card>
 
-          <Card>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Total Offers</h3>
-            <p className="text-3xl font-bold text-blue-600">{stats.totalOffers}</p>
+          <Card className="border-t-4 border-t-green-600">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">🎯 Total Offers</h3>
+            <p className="text-3xl font-bold text-green-600">{stats.totalOffers}</p>
           </Card>
 
-          <Card>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Active Shipments</h3>
-            <p className="text-3xl font-bold text-green-600">{stats.totalShipments}</p>
+          <Card className="border-t-4 border-t-purple-600">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">🚚 Active Shipments</h3>
+            <p className="text-3xl font-bold text-purple-600">{stats.totalShipments}</p>
           </Card>
 
-          <Card>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Active Partners</h3>
-            <p className="text-3xl font-bold text-purple-600">{stats.activePartners}</p>
+          <Card className="border-t-4 border-t-indigo-600">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">🏢 Active Partners</h3>
+            <p className="text-3xl font-bold text-indigo-600">{stats.activePartners}</p>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <Card className="border-t-4 border-t-yellow-500">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">👥 Total Traders</h3>
+            <p className="text-3xl font-bold text-yellow-600">{stats.totalTraders}</p>
+          </Card>
+
+          <Card className="border-t-4 border-t-emerald-600">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">💰 Platform GMV</h3>
+            <p className="text-3xl font-bold text-emerald-600">₹{(stats.platformGMV / 100000).toFixed(1)}L</p>
+          </Card>
+
+          <Card className="border-t-4 border-t-red-500">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">⏳ Pending Approvals</h3>
+            <p className="text-3xl font-bold text-red-600">{stats.pendingPayments}</p>
           </Card>
         </div>
 

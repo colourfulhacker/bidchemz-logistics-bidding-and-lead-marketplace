@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import Card, { CardHeader, CardBody, CardTitle } from '@/components/ui/Card';
 import { NotificationCenter } from '@/components/NotificationCenter';
@@ -18,16 +18,14 @@ export default function TraderDashboard() {
     withOffers: 0,
     selected: 0,
     total: 0,
+    totalSpend: 0,
+    avgQuoteValue: 0,
+    lowestRate: 0,
+    completedShipments: 0,
   });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (token) {
-      fetchQuotes();
-    }
-  }, [token]);
-
-  const fetchQuotes = async () => {
+  const fetchQuotes = useCallback(async () => {
     try {
       const response = await fetch('/api/quotes', {
         headers: {
@@ -40,11 +38,20 @@ export default function TraderDashboard() {
         const quotesList = data.quotes || [];
         setQuotes(quotesList);
         
+        const selectedQuotes = quotesList.filter((q: any) => q.status === 'SELECTED');
+        const totalSpend = selectedQuotes.reduce((sum: number, q: any) => sum + (q.selectedOffer?.price || 0), 0);
+        const allOffers = selectedQuotes.flatMap((q: any) => q.offers || []);
+        const lowestRate = allOffers.length > 0 ? Math.min(...allOffers.map((o: any) => o.price || Infinity)) : 0;
+        
         setStats({
           active: quotesList.filter((q: any) => q.status === 'MATCHING').length,
           withOffers: quotesList.filter((q: any) => q.status === 'OFFERS_AVAILABLE').length,
-          selected: quotesList.filter((q: any) => q.status === 'SELECTED').length,
+          selected: selectedQuotes.length,
           total: quotesList.length,
+          totalSpend: totalSpend,
+          avgQuoteValue: quotesList.length > 0 ? totalSpend / quotesList.length : 0,
+          lowestRate: lowestRate === Infinity ? 0 : lowestRate,
+          completedShipments: selectedQuotes.length,
         });
       }
     } catch (error) {
@@ -52,7 +59,13 @@ export default function TraderDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      fetchQuotes();
+    }
+  }, [token, fetchQuotes]);
 
   if (!user || user.role !== 'TRADER') {
     return (
@@ -82,29 +95,54 @@ export default function TraderDashboard() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <Card>
             <CardBody className="text-center">
-              <p className="text-sm text-gray-600 mb-1">Active Quotes</p>
-              <p className="text-4xl font-bold text-blue-600">{stats.active}</p>
+              <p className="text-sm text-gray-600 mb-1">🔄 Active Quotes</p>
+              <p className="text-3xl font-bold text-blue-600">{stats.active}</p>
+              <p className="text-xs text-gray-500 mt-2">Awaiting offers</p>
             </CardBody>
           </Card>
           <Card>
             <CardBody className="text-center">
-              <p className="text-sm text-gray-600 mb-1">With Offers</p>
-              <p className="text-4xl font-bold text-green-600">{stats.withOffers}</p>
+              <p className="text-sm text-gray-600 mb-1">📊 With Offers</p>
+              <p className="text-3xl font-bold text-green-600">{stats.withOffers}</p>
+              <p className="text-xs text-gray-500 mt-2">Ready to select</p>
             </CardBody>
           </Card>
           <Card>
             <CardBody className="text-center">
-              <p className="text-sm text-gray-600 mb-1">Selected</p>
-              <p className="text-4xl font-bold text-purple-600">{stats.selected}</p>
+              <p className="text-sm text-gray-600 mb-1">✓ Completed</p>
+              <p className="text-3xl font-bold text-purple-600">{stats.completedShipments}</p>
+              <p className="text-xs text-gray-500 mt-2">Shipments</p>
             </CardBody>
           </Card>
           <Card>
             <CardBody className="text-center">
-              <p className="text-sm text-gray-600 mb-1">Total Quotes</p>
-              <p className="text-4xl font-bold text-gray-900">{stats.total}</p>
+              <p className="text-sm text-gray-600 mb-1">💰 Total Spend</p>
+              <p className="text-3xl font-bold text-indigo-600">₹{stats.totalSpend.toFixed(0)}</p>
+              <p className="text-xs text-gray-500 mt-2">On logistics</p>
+            </CardBody>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <Card>
+            <CardBody className="text-center">
+              <p className="text-sm text-gray-600 mb-1">📈 Avg Quote Value</p>
+              <p className="text-2xl font-bold text-gray-900">₹{stats.avgQuoteValue.toFixed(0)}</p>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardBody className="text-center">
+              <p className="text-sm text-gray-600 mb-1">💎 Lowest Rate</p>
+              <p className="text-2xl font-bold text-green-600">₹{stats.lowestRate.toFixed(0)}</p>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardBody className="text-center">
+              <p className="text-sm text-gray-600 mb-1">📋 Total Quotes</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
             </CardBody>
           </Card>
         </div>

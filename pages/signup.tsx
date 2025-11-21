@@ -7,8 +7,15 @@ import PasswordInput from '@/components/ui/PasswordInput';
 import Select from '@/components/ui/Select';
 import Card from '@/components/ui/Card';
 import Link from 'next/link';
-import { UserRole } from '@prisma/client';
 import PolicyAcceptanceModal from '@/components/PolicyAcceptanceModal';
+
+type UserRole = 'TRADER' | 'LOGISTICS_PARTNER' | 'ADMIN';
+
+const UserRole = {
+  TRADER: 'TRADER' as const,
+  LOGISTICS_PARTNER: 'LOGISTICS_PARTNER' as const,
+  ADMIN: 'ADMIN' as const,
+};
 
 export default function Signup() {
   const { signup } = useAuth();

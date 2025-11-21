@@ -26,14 +26,17 @@ export default async function handler(
           totalOffers,
           totalShipments,
           activePartners,
+          totalTraders,
           totalRevenue,
           pendingPayments,
           quotesByStatus,
+          selectedOffers,
         ] = await Promise.all([
           prisma.quote.count(),
           prisma.offer.count(),
           prisma.shipment.count(),
           prisma.user.count({ where: { role: UserRole.LOGISTICS_PARTNER, isActive: true } }),
+          prisma.user.count({ where: { role: UserRole.TRADER, isActive: true } }),
           prisma.leadTransaction.aggregate({
             _sum: { amount: true },
             where: { transactionType: 'DEBIT' },
@@ -43,6 +46,10 @@ export default async function handler(
             by: ['status'],
             _count: true,
           }),
+          prisma.offer.findMany({
+            where: { status: 'SELECTED' },
+            select: { price: true },
+          }),
         ]);
 
         const quoteStatusMap: Record<string, number> = {};
@@ -50,13 +57,17 @@ export default async function handler(
           quoteStatusMap[item.status] = item._count;
         });
 
+        const platformGMV = selectedOffers.reduce((sum, offer) => sum + (offer.price || 0), 0);
+
         return {
           totalQuotes,
           totalOffers,
           totalShipments,
           activePartners,
+          totalTraders,
           totalRevenue: totalRevenue._sum.amount || 0,
           pendingPayments,
+          platformGMV,
           quotesByStatus: quoteStatusMap,
         };
       },

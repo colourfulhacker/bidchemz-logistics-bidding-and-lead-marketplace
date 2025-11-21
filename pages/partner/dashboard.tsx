@@ -15,6 +15,9 @@ export default function PartnerDashboard() {
     activeOffers: 0,
     totalLeads: 0,
     walletBalance: 0,
+    acceptanceRate: 0,
+    earnings: 0,
+    avgRating: 4.8,
   });
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,10 +49,17 @@ export default function PartnerDashboard() {
       const walletData = await walletRes.json();
       const quotesData = await quotesRes.json();
 
+      const offers = offersData.offers || [];
+      const selectedOffers = offers.filter((o: any) => o.status === 'SELECTED');
+      const totalEarnings = selectedOffers.reduce((sum: number, o: any) => sum + (o.price || 0), 0);
+      
       setStats({
-        activeOffers: offersData.offers?.filter((o: any) => o.status === 'PENDING').length || 0,
-        totalLeads: offersData.offers?.length || 0,
+        activeOffers: offers.filter((o: any) => o.status === 'PENDING').length,
+        totalLeads: offers.length,
         walletBalance: walletData.wallet?.balance || 0,
+        acceptanceRate: offers.length > 0 ? Math.round((selectedOffers.length / offers.length) * 100) : 0,
+        earnings: totalEarnings,
+        avgRating: 4.8,
       });
 
       setQuotes(quotesData.quotes || []);
@@ -73,22 +83,44 @@ export default function PartnerDashboard() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Partner Dashboard</h1>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <Card className="border-l-4 border-l-blue-600">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">🔄 Active Offers</h3>
+            <p className="text-3xl font-bold text-blue-600">{stats.activeOffers}</p>
+            <p className="text-xs text-gray-500 mt-2">Pending response</p>
+          </Card>
+
+          <Card className="border-l-4 border-l-purple-600">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">📊 Total Leads</h3>
+            <p className="text-3xl font-bold text-purple-600">{stats.totalLeads}</p>
+            <p className="text-xs text-gray-500 mt-2">Received</p>
+          </Card>
+
+          <Card className="border-l-4 border-l-green-600">
+            <h3 className="text-sm font-medium text-gray-500 mb-2">💰 Earnings</h3>
+            <p className="text-3xl font-bold text-green-600">₹{stats.earnings.toFixed(0)}</p>
+            <p className="text-xs text-gray-500 mt-2">From accepted offers</p>
+          </Card>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Active Offers</h3>
-            <p className="text-3xl font-bold text-blue-600">{stats.activeOffers}</p>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">⭐ Rating</h3>
+            <p className="text-3xl font-bold text-yellow-500">{stats.avgRating}</p>
+            <p className="text-xs text-gray-500 mt-2">From traders</p>
           </Card>
 
           <Card>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Total Leads</h3>
-            <p className="text-3xl font-bold text-blue-600">{stats.totalLeads}</p>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">✓ Acceptance Rate</h3>
+            <p className="text-3xl font-bold text-indigo-600">{stats.acceptanceRate}%</p>
+            <p className="text-xs text-gray-500 mt-2">Offers accepted</p>
           </Card>
 
           <Card>
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Wallet Balance</h3>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">💳 Wallet Balance</h3>
             <p className="text-3xl font-bold text-green-600">₹{stats.walletBalance.toFixed(2)}</p>
             <Link href="/partner/wallet">
-              <Button variant="secondary" className="mt-4 w-full">
+              <Button variant="secondary" className="mt-4 w-full text-sm py-2">
                 Recharge Wallet
               </Button>
             </Link>
