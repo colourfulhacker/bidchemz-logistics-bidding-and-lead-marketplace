@@ -23,13 +23,13 @@ export default function AdminPartners() {
 
   const fetchPartners = async () => {
     try {
-      const response = await fetch('/api/admin/users?filter=partners', {
+      const response = await fetch('/api/admin/users?filter=LOGISTICS_PARTNER', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.ok) {
         const data = await response.json();
-        setPartners(data.data || data || []);
+        setPartners(data.users || data.data || data || []);
       }
     } catch (error) {
       console.error('Error fetching partners:', error);
