@@ -47,7 +47,7 @@ export default async function handler(
             _count: true,
           }),
           prisma.offer.findMany({
-            where: { status: 'SELECTED' },
+            where: { status: 'ACCEPTED' },
             select: { price: true },
           }),
         ]);

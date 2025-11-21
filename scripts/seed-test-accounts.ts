@@ -632,8 +632,10 @@ async function main() {
     const statuses = [QuoteStatus.DRAFT, QuoteStatus.SUBMITTED, QuoteStatus.MATCHING, QuoteStatus.OFFERS_AVAILABLE];
     const status = statuses[i % statuses.length];
     
-    const newQuote = await prisma.quote.create({
-      data: {
+    const newQuote = await prisma.quote.upsert({
+      where: { quoteNumber: `BID-2025-${String(6 + i).padStart(3, '0')}` },
+      update: {},
+      create: {
         quoteNumber: `BID-2025-${String(6 + i).padStart(3, '0')}`,
         traderId: config.trader.id,
         status,
