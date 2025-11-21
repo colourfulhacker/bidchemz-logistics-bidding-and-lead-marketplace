@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardHeader, CardBody, CardTitle } from '@/components/ui/Card';
@@ -18,12 +18,7 @@ export default function QuoteDetails() {
   const [sortBy, setSortBy] = useState<'price' | 'transit' | 'rating'>('price');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  useEffect(() => {
-    if (!user || !id) return;
-    fetchQuote();
-  }, [user, token, id]);
-
-  const fetchQuote = async () => {
+  const fetchQuote = useCallback(async () => {
     try {
       const response = await fetch(`/api/quotes/${id}`, {
         headers: { 'Authorization': `Bearer ${token}` },
@@ -41,7 +36,12 @@ export default function QuoteDetails() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, token, router]);
+
+  useEffect(() => {
+    if (!user || !id) return;
+    fetchQuote();
+  }, [user, id, fetchQuote]);
 
   if (loading) {
     return (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import Card from '@/components/ui/Card';
@@ -13,16 +13,7 @@ export default function QuotesList() {
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
-
-    fetchQuotes();
-  }, [user, token]);
-
-  const fetchQuotes = async () => {
+  const fetchQuotes = useCallback(async () => {
     try {
       const response = await fetch('/api/quotes', {
         headers: { 'Authorization': `Bearer ${token}` },
@@ -37,7 +28,15 @@ export default function QuotesList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    fetchQuotes();
+  }, [user, router, fetchQuotes]);
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, 'primary' | 'success' | 'warning' | 'danger' | 'neutral'> = {

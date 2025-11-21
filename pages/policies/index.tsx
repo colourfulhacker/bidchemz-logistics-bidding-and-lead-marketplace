@@ -78,7 +78,7 @@ export default function PoliciesPage() {
           <div className="p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-2">Questions about our policies?</h3>
             <p className="text-gray-700 mb-4">
-              If you have any questions about our terms, privacy practices, or partner requirements, please don't hesitate to contact us.
+              If you have any questions about our terms, privacy practices, or partner requirements, please don&apos;t hesitate to contact us.
             </p>
             <a href="mailto:legal@bidchemz.com" className="text-blue-600 hover:text-blue-800 font-semibold">
               legal@bidchemz.com
