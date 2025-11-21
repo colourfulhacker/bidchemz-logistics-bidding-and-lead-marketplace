@@ -216,57 +216,44 @@ export default function PartnerDashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-l-4 border-l-blue-600 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-blue-900 mb-1">Active Offers</p>
-                <p className="text-4xl font-bold text-blue-600">{stats.activeOffers}</p>
-                <p className="text-xs text-blue-700 mt-2">Awaiting response</p>
-              </div>
-              <div className="text-5xl opacity-20">🔄</div>
+            <div>
+              <p className="text-sm font-medium text-blue-900 mb-1">Active Offers</p>
+              <p className="text-4xl font-bold text-blue-600">{stats.activeOffers}</p>
+              <p className="text-xs text-blue-700 mt-2">Awaiting response</p>
             </div>
           </Card>
 
           <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-l-4 border-l-purple-600 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-purple-900 mb-1">Total Leads</p>
-                <p className="text-4xl font-bold text-purple-600">{stats.totalLeads}</p>
-                <p className="text-xs text-purple-700 mt-2">Lifetime received</p>
-              </div>
-              <div className="text-5xl opacity-20">📊</div>
+            <div>
+              <p className="text-sm font-medium text-purple-900 mb-1">Total Leads</p>
+              <p className="text-4xl font-bold text-purple-600">{stats.totalLeads}</p>
+              <p className="text-xs text-purple-700 mt-2">Lifetime received</p>
             </div>
           </Card>
 
           <Card className="bg-gradient-to-br from-green-50 to-green-100 border-l-4 border-l-green-600 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-green-900 mb-1">Total Earnings</p>
-                <p className="text-4xl font-bold text-green-600">₹{stats.earnings.toLocaleString()}</p>
-                <p className="text-xs text-green-700 mt-2">From accepted offers</p>
-              </div>
-              <div className="text-5xl opacity-20">💰</div>
+            <div>
+              <p className="text-sm font-medium text-green-900 mb-1">Total Earnings</p>
+              <p className="text-4xl font-bold text-green-600">₹{stats.earnings.toLocaleString()}</p>
+              <p className="text-xs text-green-700 mt-2">From accepted offers</p>
             </div>
           </Card>
 
           <Card className={`bg-gradient-to-br ${stats.walletBalance < 1000 ? 'from-red-50 to-red-100 border-l-red-600' : 'from-emerald-50 to-emerald-100 border-l-emerald-600'} border-l-4 hover:shadow-lg transition-shadow`}>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className={`text-sm font-medium ${stats.walletBalance < 1000 ? 'text-red-900' : 'text-emerald-900'} mb-1`}>Wallet Balance</p>
-                <p className={`text-4xl font-bold ${stats.walletBalance < 1000 ? 'text-red-600' : 'text-emerald-600'}`}>₹{stats.walletBalance.toLocaleString()}</p>
-                {stats.walletBalance < 1000 && (
-                  <p className="text-xs text-red-700 mt-2 font-semibold">⚠️ Low balance!</p>
-                )}
-              </div>
-              <div className="text-5xl opacity-20">💳</div>
+            <div>
+              <p className={`text-sm font-medium ${stats.walletBalance < 1000 ? 'text-red-900' : 'text-emerald-900'} mb-1`}>Wallet Balance</p>
+              <p className={`text-4xl font-bold ${stats.walletBalance < 1000 ? 'text-red-600' : 'text-emerald-600'}`}>₹{stats.walletBalance.toLocaleString()}</p>
+              {stats.walletBalance < 1000 && (
+                <p className="text-xs text-red-700 mt-2 font-semibold">Low balance - Recharge recommended</p>
+              )}
             </div>
           </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card>
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Performance Rating</h3>
-              <span className="text-2xl">⭐</span>
             </div>
             <div className="text-center py-6">
               <div className="text-6xl font-bold text-yellow-500 mb-2">{stats.avgRating}</div>
@@ -282,9 +269,8 @@ export default function PartnerDashboard() {
           </Card>
 
           <Card>
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Success Rate</h3>
-              <span className="text-2xl">📈</span>
             </div>
             <div className="text-center py-6">
               <div className="relative inline-flex items-center justify-center w-32 h-32">
@@ -299,9 +285,8 @@ export default function PartnerDashboard() {
           </Card>
 
           <Card>
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Offer Status</h3>
-              <span className="text-2xl">📋</span>
             </div>
             <div style={{ height: '180px' }}>
               <Doughnut data={offersStatusData} options={doughnutOptions} />
@@ -457,9 +442,8 @@ export default function PartnerDashboard() {
           <Card className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white hover:shadow-xl transition-shadow cursor-pointer">
             <Link href="/partner/leads">
               <div className="text-center py-8">
-                <div className="text-5xl mb-4">🔍</div>
                 <h3 className="text-xl font-bold mb-2">Browse Leads</h3>
-                <p className="text-blue-100 text-sm">Discover new freight opportunities</p>
+                <p className="text-blue-100 text-sm">Discover new freight opportunities matching your capabilities</p>
               </div>
             </Link>
           </Card>
@@ -467,9 +451,8 @@ export default function PartnerDashboard() {
           <Card className="bg-gradient-to-br from-green-600 to-emerald-600 text-white hover:shadow-xl transition-shadow cursor-pointer">
             <Link href="/partner/offers">
               <div className="text-center py-8">
-                <div className="text-5xl mb-4">📋</div>
                 <h3 className="text-xl font-bold mb-2">My Offers</h3>
-                <p className="text-green-100 text-sm">Track your submitted bids</p>
+                <p className="text-green-100 text-sm">Track your submitted bids and acceptance status</p>
               </div>
             </Link>
           </Card>
@@ -477,9 +460,8 @@ export default function PartnerDashboard() {
           <Card className="bg-gradient-to-br from-purple-600 to-pink-600 text-white hover:shadow-xl transition-shadow cursor-pointer">
             <Link href="/partner/capabilities">
               <div className="text-center py-8">
-                <div className="text-5xl mb-4">⚙️</div>
                 <h3 className="text-xl font-bold mb-2">Capabilities</h3>
-                <p className="text-purple-100 text-sm">Manage your services</p>
+                <p className="text-purple-100 text-sm">Manage your services and fleet information</p>
               </div>
             </Link>
           </Card>

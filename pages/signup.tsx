@@ -145,15 +145,13 @@ export default function Signup() {
   const getRoleInfo = (role: string) => {
     if (role === 'TRADER') {
       return {
-        icon: '🏭',
         title: 'Chemical Trader',
-        description: 'I need logistics for chemical transport',
+        description: 'Post your freight requirements and receive competitive offers from verified logistics partners',
       };
     } else if (role === 'LOGISTICS_PARTNER') {
       return {
-        icon: '🚚',
         title: 'Logistics Partner',
-        description: 'I provide chemical logistics services',
+        description: 'Browse freight opportunities and submit competitive bids for chemical transport services',
       };
     }
     return null;
@@ -235,21 +233,16 @@ export default function Signup() {
                   onChange={handleChange}
                   options={[
                     { label: 'Select your role', value: '' },
-                    { label: '🏭 Chemical Trader (I need logistics)', value: UserRole.TRADER },
-                    { label: '🚚 Logistics Partner (I provide services)', value: UserRole.LOGISTICS_PARTNER },
+                    { label: 'Chemical Trader (I need logistics)', value: UserRole.TRADER },
+                    { label: 'Logistics Partner (I provide services)', value: UserRole.LOGISTICS_PARTNER },
                   ]}
                   required
                 />
 
                 {roleInfo && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div className="flex items-start">
-                      <span className="text-3xl mr-3">{roleInfo.icon}</span>
-                      <div>
-                        <h4 className="font-semibold text-blue-900">{roleInfo.title}</h4>
-                        <p className="text-sm text-blue-700 mt-1">{roleInfo.description}</p>
-                      </div>
-                    </div>
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-blue-900 mb-2">{roleInfo.title}</h4>
+                    <p className="text-sm text-blue-700">{roleInfo.description}</p>
                   </div>
                 )}
 

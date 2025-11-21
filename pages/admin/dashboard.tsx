@@ -63,45 +63,60 @@ export default function AdminDashboard() {
 
   return (
     <Layout>
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Platform Overview</h1>
+            <p className="text-gray-600 mt-1">Real-time system metrics and analytics</p>
+          </div>
+          <div className="text-sm text-gray-600">
+            Last updated: {new Date().toLocaleTimeString()}
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <Card className="border-t-4 border-t-blue-600">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="border-l-4 border-l-blue-600 hover:shadow-lg transition-shadow">
             <h3 className="text-sm font-medium text-gray-500 mb-2">Total Quotes</h3>
             <p className="text-3xl font-bold text-blue-600">{stats.totalQuotes}</p>
+            <p className="text-xs text-gray-600 mt-2">Freight requests posted</p>
           </Card>
 
-          <Card className="border-t-4 border-t-green-600">
+          <Card className="border-l-4 border-l-green-600 hover:shadow-lg transition-shadow">
             <h3 className="text-sm font-medium text-gray-500 mb-2">Total Offers</h3>
             <p className="text-3xl font-bold text-green-600">{stats.totalOffers}</p>
+            <p className="text-xs text-gray-600 mt-2">Competitive bids submitted</p>
           </Card>
 
-          <Card className="border-t-4 border-t-purple-600">
+          <Card className="border-l-4 border-l-purple-600 hover:shadow-lg transition-shadow">
             <h3 className="text-sm font-medium text-gray-500 mb-2">Active Shipments</h3>
             <p className="text-3xl font-bold text-purple-600">{stats.totalShipments}</p>
+            <p className="text-xs text-gray-600 mt-2">In transit or processing</p>
           </Card>
 
-          <Card className="border-t-4 border-t-indigo-600">
+          <Card className="border-l-4 border-l-indigo-600 hover:shadow-lg transition-shadow">
             <h3 className="text-sm font-medium text-gray-500 mb-2">Active Partners</h3>
             <p className="text-3xl font-bold text-indigo-600">{stats.activePartners}</p>
+            <p className="text-xs text-gray-600 mt-2">Verified logistics providers</p>
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Card className="border-t-4 border-t-yellow-500">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="border-l-4 border-l-yellow-500 hover:shadow-lg transition-shadow">
             <h3 className="text-sm font-medium text-gray-500 mb-2">Total Traders</h3>
             <p className="text-3xl font-bold text-yellow-600">{stats.totalTraders}</p>
+            <p className="text-xs text-gray-600 mt-2">Active trader accounts</p>
           </Card>
 
-          <Card className="border-t-4 border-t-emerald-600">
+          <Card className="border-l-4 border-l-emerald-600 hover:shadow-lg transition-shadow">
             <h3 className="text-sm font-medium text-gray-500 mb-2">Platform GMV</h3>
             <p className="text-3xl font-bold text-emerald-600">₹{(stats.platformGMV / 100000).toFixed(1)}L</p>
+            <p className="text-xs text-gray-600 mt-2">Total transaction value</p>
           </Card>
 
-          <Card className="border-t-4 border-t-red-500">
+          <Card className={`border-l-4 ${stats.pendingPayments > 0 ? 'border-l-red-500 bg-red-50' : 'border-l-green-500 bg-green-50'} hover:shadow-lg transition-shadow`}>
             <h3 className="text-sm font-medium text-gray-500 mb-2">Pending Approvals</h3>
-            <p className="text-3xl font-bold text-red-600">{stats.pendingPayments}</p>
+            <p className={`text-3xl font-bold ${stats.pendingPayments > 0 ? 'text-red-600' : 'text-green-600'}`}>{stats.pendingPayments}</p>
+            <p className="text-xs text-gray-600 mt-2">Payment requests awaiting action</p>
           </Card>
         </div>
 
