@@ -678,13 +678,17 @@ async function main() {
     for (let j = 0; j < numOffers; j++) {
       const partner = partners[(i + j) % partners.length];
       const basePrice = 50000 + (i * 3000) + (j * 5000);
-      const status = j === 0 ? OfferStatus.PENDING : (j === 1 ? OfferStatus.PENDING : OfferStatus.PENDING);
+      const services = [
+        ['Real-time tracking', 'SMS updates'],
+        ['GPS tracking', 'Photo delivery proof'],
+        ['Temperature monitoring', 'Dedicated support']
+      ];
       
       await prisma.offer.create({
         data: {
           quoteId: quote.id,
           partnerId: partner.id,
-          status,
+          status: OfferStatus.PENDING,
           price: basePrice + (Math.random() * 10000),
           currency: 'INR',
           transitDays: 2 + (i % 4),
@@ -692,7 +696,7 @@ async function main() {
           pickupAvailableFrom: new Date(now.getTime() + (i % 3) * 24 * 60 * 60 * 1000),
           insuranceIncluded: i % 2 === 0,
           trackingIncluded: true,
-          valueAddedServices: ['Real-time tracking', 'SMS updates', 'Photo delivery proof'][j % 3 === 0 ? 0 : j === 1 ? 1 : 2] ? ['Real-time tracking', 'SMS updates', 'Photo delivery proof'][(j % 3)] : [],
+          valueAddedServices: services[j % 3],
           expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
         },
       });
