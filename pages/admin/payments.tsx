@@ -16,7 +16,7 @@ export default function AdminPayments() {
   const [reviewNotes, setReviewNotes] = useState('');
   const [actionType, setActionType] = useState<'APPROVED' | 'REJECTED'>('APPROVED');
   const [processing, setProcessing] = useState(false);
-  const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [alert, setAlert] = useState<{ type: 'success' | 'danger' | 'warning' | 'info'; message: string } | null>(null);
 
   useEffect(() => {
     if (!user || user.role !== 'ADMIN') {
@@ -84,10 +84,10 @@ export default function AdminPayments() {
         fetchPaymentRequests();
       } else {
         const data = await response.json();
-        setAlert({ type: 'error', message: data.error || 'Failed to review request' });
+        setAlert({ type: 'danger', message: data.error || 'Failed to review request' });
       }
     } catch (error) {
-      setAlert({ type: 'error', message: 'An error occurred' });
+      setAlert({ type: 'danger', message: 'An error occurred' });
     } finally {
       setProcessing(false);
     }

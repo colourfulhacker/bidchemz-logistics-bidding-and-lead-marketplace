@@ -25,23 +25,22 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         return res.status(404).json({ error: 'Transaction not found' });
       }
 
-      // Check authorization
-      if (
-        req.user!.role !== UserRole.ADMIN &&
-        transaction.wallet.userId !== req.user!.userId
-      ) {
+      // Check authorization - ONLY the owner can access their invoices
+      // Even admins must use proper admin endpoints for financial auditing with logging
+      if (transaction.wallet.userId !== req.user!.userId) {
         return res.status(403).json({ error: 'Cannot access this invoice' });
       }
 
       // Generate PDF if requested
       if (format === 'pdf') {
-        const doc = new PDFDocument();
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader(
-          'Content-Disposition',
-          `attachment; filename="invoice-${transaction.id}.pdf"`
-        );
-        doc.pipe(res);
+        try {
+          const doc = new PDFDocument();
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader(
+            'Content-Disposition',
+            `attachment; filename="invoice-${transaction.id}.pdf"`
+          );
+          doc.pipe(res);
 
         // Header
         doc.fontSize(20).text('BidChemz Logistics Invoice', 100, 50);
@@ -78,11 +77,17 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         doc.fontSize(12).text('Total Amount', 100, 295);
         doc.text(`₹${totalAmount.toFixed(2)}`, 450, 295);
 
-        // Footer
-        doc.fontSize(9).text('Thank you for your business!', 100, 550);
-        doc.text('Payment Terms: Due on receipt', 100, 570);
+          // Footer
+          doc.fontSize(9).text('Thank you for your business!', 100, 550);
+          doc.text('Payment Terms: Due on receipt', 100, 570);
 
-        doc.end();
+          doc.end();
+        } catch (pdfError) {
+          console.error('PDF generation error:', pdfError);
+          if (!res.headersSent) {
+            res.status(500).json({ error: 'Failed to generate PDF' });
+          }
+        }
       } else {
         // JSON response
         const gstRate = 0.18;

@@ -49,10 +49,10 @@ export default function PartnerDashboard() {
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [recentActivity, setRecentActivity] = useState([
-    { id: 1, type: 'offer_submitted', title: 'Offer Submitted', description: 'Corrosive chemicals - Mumbai to Delhi', time: '2 hours ago', color: 'blue' },
-    { id: 2, type: 'offer_accepted', title: 'Offer Accepted', description: 'Sulfuric Acid transport - ₹95,000', time: '5 hours ago', color: 'green' },
-    { id: 3, type: 'lead_fee', title: 'Lead Fee Deducted', description: '₹500 deducted from wallet', time: '5 hours ago', color: 'orange' },
-    { id: 4, type: 'new_lead', title: 'New Lead Available', description: 'Flammable liquid - Pune to Surat', time: '1 day ago', color: 'purple' },
+    { id: 1, type: 'offer_submitted', title: 'Offer Submitted', description: 'Corrosive chemicals - Mumbai to Delhi', time: '2 hours ago', color: 'blue', icon: '📤' },
+    { id: 2, type: 'offer_accepted', title: 'Offer Accepted', description: 'Sulfuric Acid transport - ₹95,000', time: '5 hours ago', color: 'green', icon: '✅' },
+    { id: 3, type: 'lead_fee', title: 'Lead Fee Deducted', description: '₹500 deducted from wallet', time: '5 hours ago', color: 'orange', icon: '💰' },
+    { id: 4, type: 'new_lead', title: 'New Lead Available', description: 'Flammable liquid - Pune to Surat', time: '1 day ago', color: 'purple', icon: '🆕' },
   ]);
 
   useEffect(() => {

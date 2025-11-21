@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import Layout from '@/components/layout';
-import Card from '@/components/ui/card';
-import Button from '@/components/ui/button';
-import Alert from '@/components/ui/alert';
-import Badge from '@/components/ui/badge';
+import { Layout } from '@/components/layout/Layout';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import Alert from '@/components/ui/Alert';
+import Badge from '@/components/ui/Badge';
 
 const SubscriptionTiers = ['FREE', 'STANDARD', 'PREMIUM'];
 
@@ -12,7 +12,7 @@ export default function SubscriptionManagementPage() {
   const [loading, setLoading] = useState(true);
   const [selectedPartner, setSelectedPartner] = useState<any>(null);
   const [newTier, setNewTier] = useState('');
-  const [alert, setAlert] = useState<{ type: string; message: string } | null>(null);
+  const [alert, setAlert] = useState<{ type: 'success' | 'danger' | 'warning' | 'info'; message: string } | null>(null);
 
   useEffect(() => {
     fetchPartners();
@@ -26,7 +26,7 @@ export default function SubscriptionManagementPage() {
         setPartners(data.users || []);
       }
     } catch (error) {
-      setAlert({ type: 'error', message: 'Failed to fetch partners' });
+      setAlert({ type: 'danger', message: 'Failed to fetch partners' });
     } finally {
       setLoading(false);
     }
@@ -49,10 +49,10 @@ export default function SubscriptionManagementPage() {
         setSelectedPartner(null);
       } else {
         const data = await response.json();
-        setAlert({ type: 'error', message: data.error });
+        setAlert({ type: 'danger', message: data.error });
       }
     } catch (error) {
-      setAlert({ type: 'error', message: 'Failed to update tier' });
+      setAlert({ type: 'danger', message: 'Failed to update tier' });
     }
   };
 
@@ -75,7 +75,7 @@ export default function SubscriptionManagementPage() {
           <p className="text-gray-600 mt-2">Manage partner subscription tiers and pricing</p>
         </div>
 
-        {alert && <Alert type={alert.type} message={alert.message} />}
+        {alert && <Alert type={alert.type}>{alert.message}</Alert>}
 
         <Card>
           <div className="overflow-x-auto">

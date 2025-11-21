@@ -33,15 +33,18 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       } = req.body;
 
       const updateData: any = {};
-      if (serviceCities) updateData.serviceCities = serviceCities;
-      if (serviceStates) updateData.serviceStates = serviceStates;
-      if (serviceCountries) updateData.serviceCountries = serviceCountries;
-      if (warehouseLocations) updateData.warehouseLocations = warehouseLocations;
+      if (serviceCities && Array.isArray(serviceCities)) updateData.serviceCities = serviceCities;
+      if (serviceStates && Array.isArray(serviceStates)) updateData.serviceStates = serviceStates;
+      if (serviceCountries && Array.isArray(serviceCountries)) updateData.serviceCountries = serviceCountries;
+      if (warehouseLocations && Array.isArray(warehouseLocations)) updateData.warehouseLocations = warehouseLocations;
       if (hasWarehouse !== undefined) updateData.hasWarehouse = hasWarehouse;
       
-      // Store certifications as JSON in productCategories if it doesn't have its own field
+      // Validate and store certifications as string array
       if (certifications) {
-        updateData.productCategories = certifications;
+        if (!Array.isArray(certifications) || !certifications.every(c => typeof c === 'string')) {
+          return res.status(400).json({ error: 'Certifications must be an array of strings' });
+        }
+        updateData.certifications = certifications;
       }
 
       const updated = await prisma.partnerCapability.update({

@@ -14,7 +14,7 @@ export default function PartnerRecharge() {
   const [paymentDate, setPaymentDate] = useState('');
   const [requestNotes, setRequestNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [alert, setAlert] = useState<{ type: 'success' | 'danger' | 'warning' | 'info'; message: string } | null>(null);
   const [requests, setRequests] = useState<any[]>([]);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function PartnerRecharge() {
     e.preventDefault();
 
     if (!amount || parseFloat(amount) <= 0) {
-      setAlert({ type: 'error', message: 'Please enter a valid amount' });
+      setAlert({ type: 'danger', message: 'Please enter a valid amount' });
       return;
     }
 
@@ -82,10 +82,10 @@ export default function PartnerRecharge() {
         fetchPaymentRequests();
       } else {
         const data = await response.json();
-        setAlert({ type: 'error', message: data.error || 'Failed to submit request' });
+        setAlert({ type: 'danger', message: data.error || 'Failed to submit request' });
       }
     } catch (error) {
-      setAlert({ type: 'error', message: 'An error occurred' });
+      setAlert({ type: 'danger', message: 'An error occurred' });
     } finally {
       setSubmitting(false);
     }

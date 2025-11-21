@@ -43,9 +43,26 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         return res.status(400).json({ error: `Invalid tier. Must be one of: ${validTiers.join(', ')}` });
       }
 
-      const updated = await prisma.partnerCapability.update({
+      // Use upsert to handle partners who don't have capability row yet
+      const updated = await prisma.partnerCapability.upsert({
         where: { userId },
-        data: { subscriptionTier },
+        update: { subscriptionTier },
+        create: {
+          userId,
+          subscriptionTier,
+          serviceTypes: [],
+          dgClasses: [],
+          productCategories: [],
+          serviceCities: [],
+          serviceStates: [],
+          serviceCountries: [],
+          fleetTypes: [],
+          hasWarehouse: false,
+          warehouseLocations: [],
+          temperatureControlled: false,
+          packagingCapabilities: [],
+          certifications: [],
+        },
         select: { userId: true, subscriptionTier: true },
       });
 

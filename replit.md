@@ -67,10 +67,46 @@ The platform is built with a clean, industrial, and data-centric aesthetic, util
 - `pages/partner/submit-offer.tsx` - Partner UI with pricing breakdown
 - `pages/api/payment-requests/[id].ts` - Admin approval workflow
 
+### Enhanced Partner & Admin Features (November 2025) ✅
+**Status**: All features tested and production-ready
+
+**New Features Implemented**:
+1. **Partner Offer Edit/Withdraw** - Partners can modify their submitted offers (price, transit days, remarks) or withdraw them entirely before selection
+   - API: `PATCH/DELETE /api/offers/[id]` - Partners can only edit their own unselected offers
+   - UI: `/partner/edit-offer` page with form validation and authorization
+   
+2. **Lead Cost Preview API** - Partners can check lead cost before submitting offers to ensure sufficient wallet balance
+   - API: `POST /api/offers/cost` - Returns calculated cost, wallet balance, and insufficiency flag
+   - Auto-creates wallet if missing to prevent errors
+   
+3. **Partner Service Details Management** - Partners can update their service coverage and certifications
+   - API: `PATCH /api/partner-capabilities` - Updates cities, states, countries, warehouse locations, certifications
+   - Validates all inputs as arrays to prevent schema corruption
+   
+4. **Versioned API Routes** - Future-proof API with version namespacing for backward compatibility
+   - Routes: `/api/v1/offers/*` - Internal delegation to main handlers (no HTTP fetch)
+   - Maintains full auth context, middleware, and security headers
+   
+5. **Admin Subscription Tier Management** - Admins can upgrade/downgrade partner subscription tiers
+   - API: `PATCH /api/admin/subscription-tiers` - Uses upsert to handle partners without capability rows
+   - UI: `/admin/subscription-management` page with tier selection and partner filtering
+   
+6. **Invoice Generation** - Partners can download invoices for lead transactions with GST calculations
+   - API: `GET /api/invoices?transactionId=X&format=pdf|json` - Owner-only access enforced
+   - PDF: Professional invoice with BidChemz branding, line items, GST (18%), total amount
+   - JSON: Structured invoice data for programmatic access
+
+**Security Hardening Applied**:
+- Versioned API routes use direct handler imports (no session cookie exposure via HTTP fetch)
+- Invoice API restricted to owner-only access (removed admin override for financial privacy)
+- All inputs validated (array types, certifications as strings, pricing data integrity)
+- Wallet auto-creation prevents 500 errors on first partner access
+- Proper error handling with try/catch blocks for PDF generation
+
 **Test Accounts**:
-- Admin: `admin@bidchemz.com` / `Admin@123`
-- Trader: `trader@example.com` / `Trader@123`
-- Partner: `partner@logistics.com` / `Partner@123` (₹10,000 wallet balance)
+- Admin: `admin@bidchemz.com` / `Test@123`
+- Traders: `trader1@test.com`, `trader2@test.com` / `Test@123`
+- Partners: `partner1@test.com`, `partner2@test.com`, `partner3@test.com`, `partner4@test.com` / `Test@123`
 
 **Database Schema Additions**:
 - `PricingConfig` - Admin-configurable pricing parameters

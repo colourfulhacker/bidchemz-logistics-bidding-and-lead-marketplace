@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '@/components/layout';
-import Card from '@/components/ui/card';
-import Button from '@/components/ui/button';
-import Input from '@/components/ui/input';
-import Alert from '@/components/ui/alert';
+import { Layout } from '@/components/layout/Layout';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import Alert from '@/components/ui/Alert';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function EditOfferPage() {
   const router = useRouter();
   const { offerId } = router.query;
+  const { token } = useAuth();
   const [offer, setOffer] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [alert, setAlert] = useState<{ type: string; message: string } | null>(null);
+  const [alert, setAlert] = useState<{ type: 'success' | 'danger' | 'warning' | 'info'; message: string } | null>(null);
   const [formData, setFormData] = useState({
     price: 0,
     transitDays: 0,
@@ -27,7 +29,9 @@ export default function EditOfferPage() {
 
   const fetchOffer = async () => {
     try {
-      const response = await fetch(`/api/offers/${offerId}`);
+      const response = await fetch(`/api/offers/${offerId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await response.json();
       if (response.ok) {
         setOffer(data.offer);
@@ -38,7 +42,7 @@ export default function EditOfferPage() {
         });
       }
     } catch (error) {
-      setAlert({ type: 'error', message: 'Failed to fetch offer' });
+      setAlert({ type: 'danger', message: 'Failed to fetch offer' });
     } finally {
       setLoading(false);
     }
@@ -51,7 +55,10 @@ export default function EditOfferPage() {
     try {
       const response = await fetch(`/api/offers/${offerId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(formData),
       });
 
@@ -60,10 +67,10 @@ export default function EditOfferPage() {
         setTimeout(() => router.push('/partner/offers'), 2000);
       } else {
         const data = await response.json();
-        setAlert({ type: 'error', message: data.error });
+        setAlert({ type: 'danger', message: data.error });
       }
     } catch (error) {
-      setAlert({ type: 'error', message: 'Failed to update offer' });
+      setAlert({ type: 'danger', message: 'Failed to update offer' });
     } finally {
       setSubmitting(false);
     }
@@ -74,6 +81,7 @@ export default function EditOfferPage() {
       try {
         const response = await fetch(`/api/offers/${offerId}`, {
           method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (response.ok) {
@@ -81,10 +89,10 @@ export default function EditOfferPage() {
           setTimeout(() => router.push('/partner/offers'), 2000);
         } else {
           const data = await response.json();
-          setAlert({ type: 'error', message: data.error });
+          setAlert({ type: 'danger', message: data.error });
         }
       } catch (error) {
-        setAlert({ type: 'error', message: 'Failed to withdraw offer' });
+        setAlert({ type: 'danger', message: 'Failed to withdraw offer' });
       }
     }
   };
@@ -101,7 +109,7 @@ export default function EditOfferPage() {
             <p className="text-gray-600 mt-2">Quote: {offer.quote.quoteNumber}</p>
           </div>
 
-          {alert && <Alert type={alert.type} message={alert.message} />}
+          {alert && <Alert type={alert.type}>{alert.message}</Alert>}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>

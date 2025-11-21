@@ -51,11 +51,25 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       isUrgent: false,
     });
 
-    // Get wallet balance
-    const wallet = await prisma.leadWallet.findUnique({
+    // Get wallet balance - create if doesn't exist
+    let wallet = await prisma.leadWallet.findUnique({
       where: { userId: req.user!.userId },
       select: { balance: true },
     });
+
+    // Create wallet if missing
+    if (!wallet) {
+      wallet = await prisma.leadWallet.create({
+        data: {
+          userId: req.user!.userId,
+          balance: 0,
+          currency: 'INR',
+          lowBalanceAlert: true,
+          alertThreshold: 1000,
+        },
+        select: { balance: true },
+      });
+    }
 
     res.status(200).json({
       quoteId,

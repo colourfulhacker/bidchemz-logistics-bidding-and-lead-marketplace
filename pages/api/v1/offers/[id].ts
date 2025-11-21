@@ -1,30 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import handler from '../../offers/[id]';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query;
-  const { method, body, headers } = req;
-
-  if (typeof id !== 'string') {
-    return res.status(400).json({ error: 'Invalid offer ID' });
-  }
-
-  try {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL || 'http://localhost:5000'}/api/offers/${id}`,
-      {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Cookie: headers.cookie || '',
-        },
-        body: method !== 'GET' ? JSON.stringify(body) : undefined,
-      }
-    );
-
-    const data = await response.json();
-    res.status(response.status).json(data);
-  } catch (error) {
-    console.error('API v1 error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+// Versioned API route - delegates to main handler internally (NOT via HTTP fetch)
+export default async function v1Handler(req: NextApiRequest, res: NextApiResponse) {
+  // Directly call the main handler - maintains all auth context, middleware, and security
+  return handler(req, res);
 }
