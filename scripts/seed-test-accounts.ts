@@ -278,8 +278,10 @@ async function main() {
   const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
   const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000);
 
-  const quote1 = await prisma.quote.create({
-    data: {
+  const quote1 = await prisma.quote.upsert({
+    where: { quoteNumber: 'BID-2025-001' },
+    update: {},
+    create: {
       quoteNumber: 'BID-2025-001',
       traderId: trader1.id,
       status: QuoteStatus.OFFERS_AVAILABLE,
@@ -323,8 +325,10 @@ async function main() {
   });
   console.log('✅ Quote 1: Hazardous (Class 8) - Mumbai to Delhi - OFFERS_AVAILABLE');
 
-  const quote2 = await prisma.quote.create({
-    data: {
+  const quote2 = await prisma.quote.upsert({
+    where: { quoteNumber: 'BID-2025-002' },
+    update: {},
+    create: {
       quoteNumber: 'BID-2025-002',
       traderId: trader1.id,
       status: QuoteStatus.MATCHING,
@@ -359,8 +363,10 @@ async function main() {
   });
   console.log('✅ Quote 2: Flammable (Class 3) - Pune to Surat - MATCHING');
 
-  const quote3 = await prisma.quote.create({
-    data: {
+  const quote3 = await prisma.quote.upsert({
+    where: { quoteNumber: 'BID-2025-003' },
+    update: {},
+    create: {
       quoteNumber: 'BID-2025-003',
       traderId: trader2.id,
       status: QuoteStatus.SELECTED,
@@ -395,8 +401,10 @@ async function main() {
   });
   console.log('✅ Quote 3: Corrosive (Class 8) - Ahmedabad to Mumbai - SELECTED');
 
-  const quote4 = await prisma.quote.create({
-    data: {
+  const quote4 = await prisma.quote.upsert({
+    where: { quoteNumber: 'BID-2025-004' },
+    update: {},
+    create: {
       quoteNumber: 'BID-2025-004',
       traderId: trader2.id,
       status: QuoteStatus.OFFERS_AVAILABLE,
@@ -428,8 +436,10 @@ async function main() {
   });
   console.log('✅ Quote 4: Non-Hazardous - Bangalore to Chennai - OFFERS_AVAILABLE');
 
-  const quote5 = await prisma.quote.create({
-    data: {
+  const quote5 = await prisma.quote.upsert({
+    where: { quoteNumber: 'BID-2025-005' },
+    update: {},
+    create: {
       quoteNumber: 'BID-2025-005',
       traderId: trader1.id,
       status: QuoteStatus.EXPIRED,
