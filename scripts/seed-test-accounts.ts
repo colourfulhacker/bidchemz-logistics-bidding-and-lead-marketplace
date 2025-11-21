@@ -597,8 +597,10 @@ async function main() {
 
   console.log('\n🚛 Creating Shipment for Selected Quote...');
 
-  const shipment1 = await prisma.shipment.create({
-    data: {
+  const shipment1 = await prisma.shipment.upsert({
+    where: { shipmentNumber: 'SHIP-2025-001' },
+    update: {},
+    create: {
       shipmentNumber: 'SHIP-2025-001',
       quoteId: quote3.id,
       offerId: offer4.id,
