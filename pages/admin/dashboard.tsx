@@ -75,29 +75,41 @@ export default function AdminDashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border-l-4 border-l-blue-600 hover:shadow-lg transition-shadow">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Total Quotes</h3>
-            <p className="text-3xl font-bold text-blue-600">{stats.totalQuotes}</p>
-            <p className="text-xs text-gray-600 mt-2">Freight requests posted</p>
-          </Card>
+          <Link href="/admin/quotes">
+            <Card className="border-l-4 border-l-blue-600 hover:shadow-lg hover:bg-blue-50 transition-all cursor-pointer">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Total Quotes</h3>
+              <p className="text-3xl font-bold text-blue-600">{stats.totalQuotes}</p>
+              <p className="text-xs text-gray-600 mt-2">Freight requests posted</p>
+              <p className="text-xs text-blue-600 font-semibold mt-3">Click to manage</p>
+            </Card>
+          </Link>
 
-          <Card className="border-l-4 border-l-green-600 hover:shadow-lg transition-shadow">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Total Offers</h3>
-            <p className="text-3xl font-bold text-green-600">{stats.totalOffers}</p>
-            <p className="text-xs text-gray-600 mt-2">Competitive bids submitted</p>
-          </Card>
+          <Link href="/admin/offers">
+            <Card className="border-l-4 border-l-green-600 hover:shadow-lg hover:bg-green-50 transition-all cursor-pointer">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Total Offers</h3>
+              <p className="text-3xl font-bold text-green-600">{stats.totalOffers}</p>
+              <p className="text-xs text-gray-600 mt-2">Competitive bids submitted</p>
+              <p className="text-xs text-green-600 font-semibold mt-3">Click to manage</p>
+            </Card>
+          </Link>
 
-          <Card className="border-l-4 border-l-purple-600 hover:shadow-lg transition-shadow">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Active Shipments</h3>
-            <p className="text-3xl font-bold text-purple-600">{stats.totalShipments}</p>
-            <p className="text-xs text-gray-600 mt-2">In transit or processing</p>
-          </Card>
+          <Link href="/admin/shipments">
+            <Card className="border-l-4 border-l-purple-600 hover:shadow-lg hover:bg-purple-50 transition-all cursor-pointer">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Active Shipments</h3>
+              <p className="text-3xl font-bold text-purple-600">{stats.totalShipments}</p>
+              <p className="text-xs text-gray-600 mt-2">In transit or processing</p>
+              <p className="text-xs text-purple-600 font-semibold mt-3">Click to manage</p>
+            </Card>
+          </Link>
 
-          <Card className="border-l-4 border-l-indigo-600 hover:shadow-lg transition-shadow">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Active Partners</h3>
-            <p className="text-3xl font-bold text-indigo-600">{stats.activePartners}</p>
-            <p className="text-xs text-gray-600 mt-2">Verified logistics providers</p>
-          </Card>
+          <Link href="/admin/partners">
+            <Card className="border-l-4 border-l-indigo-600 hover:shadow-lg hover:bg-indigo-50 transition-all cursor-pointer">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Active Partners</h3>
+              <p className="text-3xl font-bold text-indigo-600">{stats.activePartners}</p>
+              <p className="text-xs text-gray-600 mt-2">Verified logistics providers</p>
+              <p className="text-xs text-indigo-600 font-semibold mt-3">Click to manage</p>
+            </Card>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
