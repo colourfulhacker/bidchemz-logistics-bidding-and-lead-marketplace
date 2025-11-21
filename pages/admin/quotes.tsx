@@ -9,6 +9,8 @@ export default function AdminQuotes() {
   const router = useRouter();
   const [quotes, setQuotes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<any>({});
 
   useEffect(() => {
     if (!user || user.role !== 'ADMIN') {
@@ -33,6 +35,39 @@ export default function AdminQuotes() {
       console.error('Error fetching quotes:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const startEdit = (quote: any) => {
+    setEditingId(quote.id);
+    setEditForm({
+      status: quote.status,
+      paymentTerms: quote.paymentTerms,
+      additionalNotes: quote.additionalNotes,
+    });
+  };
+
+  const updateQuote = async (id: string) => {
+    try {
+      const response = await fetch(`/api/quotes/${id}`, {
+        method: 'PATCH',
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editForm)
+      });
+
+      if (response.ok) {
+        fetchQuotes();
+        setEditingId(null);
+        alert('Quote updated successfully');
+      } else {
+        alert('Failed to update quote');
+      }
+    } catch (error) {
+      console.error('Error updating quote:', error);
+      alert('Failed to update quote');
     }
   };
 
@@ -92,33 +127,75 @@ export default function AdminQuotes() {
                   </tr>
                 ) : (
                   quotes.map((quote) => (
-                    <tr key={quote.id} className="border-t hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-medium">{quote.quoteNumber}</td>
-                      <td className="px-4 py-3 text-sm">{quote.cargoName}</td>
-                      <td className="px-4 py-3 text-sm">{quote.quantity} {quote.quantityUnit}</td>
-                      <td className="px-4 py-3 text-sm">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          quote.status === 'OFFERS_AVAILABLE' ? 'bg-green-100 text-green-800' :
-                          quote.status === 'SELECTED' ? 'bg-blue-100 text-blue-800' :
-                          quote.status === 'MATCHING' ? 'bg-yellow-100 text-yellow-800' :
-                          quote.status === 'EXPIRED' ? 'bg-red-100 text-red-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {quote.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {quote.pickupCity} → {quote.deliveryCity}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        <button
-                          onClick={() => deleteQuote(quote.id)}
-                          className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
+                    <React.Fragment key={quote.id}>
+                      <tr className="border-t hover:bg-gray-50">
+                        <td className="px-4 py-3 text-sm font-medium">{quote.quoteNumber}</td>
+                        <td className="px-4 py-3 text-sm">{quote.cargoName}</td>
+                        <td className="px-4 py-3 text-sm">{quote.quantity} {quote.quantityUnit}</td>
+                        <td className="px-4 py-3 text-sm">
+                          {editingId === quote.id ? (
+                            <select
+                              value={editForm.status}
+                              onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                              className="px-2 py-1 border rounded text-xs"
+                            >
+                              <option>DRAFT</option>
+                              <option>SUBMITTED</option>
+                              <option>MATCHING</option>
+                              <option>OFFERS_AVAILABLE</option>
+                              <option>SELECTED</option>
+                              <option>EXPIRED</option>
+                            </select>
+                          ) : (
+                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                              quote.status === 'OFFERS_AVAILABLE' ? 'bg-green-100 text-green-800' :
+                              quote.status === 'SELECTED' ? 'bg-blue-100 text-blue-800' :
+                              quote.status === 'MATCHING' ? 'bg-yellow-100 text-yellow-800' :
+                              quote.status === 'EXPIRED' ? 'bg-red-100 text-red-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {quote.status}
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600">
+                          {quote.pickupCity} → {quote.deliveryCity}
+                        </td>
+                        <td className="px-4 py-3 text-sm space-x-2">
+                          {editingId === quote.id ? (
+                            <>
+                              <button
+                                onClick={() => updateQuote(quote.id)}
+                                className="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600"
+                              >
+                                Save
+                              </button>
+                              <button
+                                onClick={() => setEditingId(null)}
+                                className="px-3 py-1 bg-gray-500 text-white text-xs rounded hover:bg-gray-600"
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => startEdit(quote)}
+                                className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => deleteQuote(quote.id)}
+                                className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600"
+                              >
+                                Delete
+                              </button>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    </React.Fragment>
                   ))
                 )}
               </tbody>

@@ -1,7 +1,7 @@
 import { NextApiResponse } from 'next';
 import prisma from '@/lib/prisma';
 import { withAuth, AuthenticatedRequest } from '@/lib/middleware';
-import { UserRole, OfferStatus } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   const { id } = req.query;
@@ -12,41 +12,23 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
   if (req.method === 'PATCH') {
     try {
-      // Admin can update any offer, partners can only update their own
-      const offer = await prisma.offer.findUnique({ where: { id } });
-
-      if (!offer) {
-        return res.status(404).json({ error: 'Offer not found' });
+      if (req.user!.role !== UserRole.ADMIN) {
+        return res.status(403).json({ error: 'Only admins can update offers' });
       }
 
-      if (req.user!.role !== UserRole.ADMIN && req.user!.userId !== offer.partnerId) {
-        return res.status(403).json({ error: 'Not authorized to update this offer' });
-      }
+      const { status, price, transitDays } = req.body;
 
-      const { status } = req.body;
-
-      if (!status || !Object.values(OfferStatus).includes(status)) {
-        return res.status(400).json({ error: 'Invalid offer status' });
-      }
+      const updateData: any = {};
+      if (status) updateData.status = status;
+      if (price !== undefined) updateData.price = price;
+      if (transitDays !== undefined) updateData.transitDays = transitDays;
 
       const updatedOffer = await prisma.offer.update({
         where: { id },
-        data: { status: status as OfferStatus },
+        data: updateData,
         include: {
-          quote: {
-            select: {
-              id: true,
-              quoteNumber: true,
-              cargoName: true,
-            },
-          },
-          partner: {
-            select: {
-              id: true,
-              email: true,
-              companyName: true,
-            },
-          },
+          quote: { select: { id: true, quoteNumber: true, cargoName: true } },
+          partner: { select: { id: true, email: true, companyName: true } },
         },
       });
 
@@ -57,18 +39,11 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     }
   } else if (req.method === 'DELETE') {
     try {
-      const offer = await prisma.offer.findUnique({ where: { id } });
-
-      if (!offer) {
-        return res.status(404).json({ error: 'Offer not found' });
-      }
-
-      if (req.user!.role !== UserRole.ADMIN && req.user!.userId !== offer.partnerId) {
-        return res.status(403).json({ error: 'Not authorized to delete this offer' });
+      if (req.user!.role !== UserRole.ADMIN) {
+        return res.status(403).json({ error: 'Only admins can delete offers' });
       }
 
       await prisma.offer.delete({ where: { id } });
-
       res.status(200).json({ message: 'Offer deleted successfully' });
     } catch (error) {
       console.error('Error deleting offer:', error);

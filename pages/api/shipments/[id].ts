@@ -1,7 +1,7 @@
 import { NextApiResponse } from 'next';
 import prisma from '@/lib/prisma';
 import { withAuth, AuthenticatedRequest } from '@/lib/middleware';
-import { UserRole, ShipmentStatus } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   const { id } = req.query;
@@ -12,22 +12,11 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
   if (req.method === 'PATCH') {
     try {
-      // Only admin can update shipment status
       if (req.user!.role !== UserRole.ADMIN) {
-        return res.status(403).json({ error: 'Only admins can update shipment status' });
-      }
-
-      const shipment = await prisma.shipment.findUnique({ where: { id } });
-
-      if (!shipment) {
-        return res.status(404).json({ error: 'Shipment not found' });
+        return res.status(403).json({ error: 'Only admins can update shipments' });
       }
 
       const { status, currentLocation, statusUpdates, trackingEvents } = req.body;
-
-      if (status && !Object.values(ShipmentStatus).includes(status)) {
-        return res.status(400).json({ error: 'Invalid shipment status' });
-      }
 
       const updateData: any = {};
       if (status) updateData.status = status;
@@ -40,17 +29,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         data: updateData,
         include: {
           quote: true,
-          offer: {
-            include: {
-              partner: {
-                select: {
-                  id: true,
-                  companyName: true,
-                  email: true,
-                },
-              },
-            },
-          },
+          offer: { include: { partner: { select: { id: true, companyName: true, email: true } } } },
         },
       });
 
@@ -59,17 +38,25 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       console.error('Error updating shipment:', error);
       res.status(500).json({ error: 'Failed to update shipment' });
     }
+  } else if (req.method === 'DELETE') {
+    try {
+      if (req.user!.role !== UserRole.ADMIN) {
+        return res.status(403).json({ error: 'Only admins can delete shipments' });
+      }
+
+      await prisma.shipment.delete({ where: { id } });
+      res.status(200).json({ message: 'Shipment deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting shipment:', error);
+      res.status(500).json({ error: 'Failed to delete shipment' });
+    }
   } else if (req.method === 'GET') {
     try {
       const shipment = await prisma.shipment.findUnique({
         where: { id },
         include: {
           quote: true,
-          offer: {
-            include: {
-              partner: true,
-            },
-          },
+          offer: { include: { partner: true } },
         },
       });
 
