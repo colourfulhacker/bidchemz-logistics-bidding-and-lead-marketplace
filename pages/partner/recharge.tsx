@@ -99,35 +99,36 @@ export default function PartnerRecharge() {
   ];
 
   const columns = [
-    { key: 'id', header: 'Request ID', render: (row: any) => row.id.slice(0, 8) },
+    { key: 'id', header: 'Request ID', render: (row: any) => (!row || !row.id ? 'N/A' : row.id.slice(0, 8)) },
     {
       key: 'amount',
       header: 'Amount',
-      render: (row: any) => `₹${row.amount.toLocaleString()}`,
+      render: (row: any) => !row ? 'N/A' : `₹${(row.amount || 0).toLocaleString()}`,
     },
-    { key: 'paymentMethod', header: 'Method', render: (row: any) => row.paymentMethod.replace(/_/g, ' ') },
-    { key: 'referenceNumber', header: 'Reference', render: (row: any) => row.referenceNumber || '-' },
+    { key: 'paymentMethod', header: 'Method', render: (row: any) => !row ? 'N/A' : (row.paymentMethod || 'N/A').replace(/_/g, ' ') },
+    { key: 'referenceNumber', header: 'Reference', render: (row: any) => !row ? 'N/A' : (row.referenceNumber || '-') },
     {
       key: 'createdAt',
       header: 'Submitted',
-      render: (row: any) => new Date(row.createdAt).toLocaleDateString(),
+      render: (row: any) => !row ? 'N/A' : new Date(row.createdAt).toLocaleDateString(),
     },
     {
       key: 'status',
       header: 'Status',
       render: (row: any) => {
+        if (!row) return 'N/A';
         const colors: any = {
           PENDING: 'yellow',
           APPROVED: 'green',
           REJECTED: 'red',
         };
-        return <Badge variant={colors[row.status]}>{row.status}</Badge>;
+        return <Badge variant={colors[row.status] || 'gray'}>{row.status || 'UNKNOWN'}</Badge>;
       },
     },
     {
       key: 'reviewNotes',
       header: 'Admin Notes',
-      render: (row: any) => row.reviewNotes || '-',
+      render: (row: any) => !row ? 'N/A' : (row.reviewNotes || '-'),
     },
   ];
 
