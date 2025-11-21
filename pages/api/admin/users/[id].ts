@@ -22,17 +22,23 @@ export default async function handler(
   const { id } = req.query;
 
   if (req.method === 'PATCH') {
-    const { isActive, isVerified } = req.body;
+    const { isActive, isVerified, phone, gstin, companyName } = req.body;
 
     const user = await prisma.user.update({
       where: { id: id as string },
       data: {
         ...(typeof isActive === 'boolean' && { isActive }),
         ...(typeof isVerified === 'boolean' && { isVerified }),
+        ...(phone && { phone }),
+        ...(gstin && { gstin }),
+        ...(companyName && { companyName }),
       },
     });
 
     return res.status(200).json({ user });
+  } else if (req.method === 'DELETE') {
+    await prisma.user.delete({ where: { id: id as string } });
+    return res.status(200).json({ message: 'User deleted successfully' });
   }
 
   return res.status(405).json({ error: 'Method not allowed' });
