@@ -101,58 +101,72 @@ export default function AdminPayments() {
   };
 
   const columns = [
-    { key: 'id', header: 'Request ID', render: (row: any) => (row.id ? row.id.slice(0, 8) : 'N/A') },
+    { key: 'id', header: 'Request ID', render: (val: any, row: any) => (!row || !row.id ? 'N/A' : row.id.slice(0, 8)) },
     {
       key: 'user',
       header: 'Partner',
-      render: (row: any) => (
-        <div>
-          <div className="font-medium">{row.user?.companyName || row.user?.email || 'Unknown'}</div>
-          <div className="text-sm text-gray-500">{row.user?.email || 'N/A'}</div>
-        </div>
-      ),
+      render: (val: any, row: any) => {
+        if (!row) return 'N/A';
+        return (
+          <div>
+            <div className="font-medium">{row.user?.companyName || row.user?.email || 'Unknown'}</div>
+            <div className="text-sm text-gray-500">{row.user?.email || 'N/A'}</div>
+          </div>
+        );
+      },
     },
     {
       key: 'amount',
       header: 'Amount',
-      render: (row: any) => (
-        <span className="font-semibold text-green-600">
-          ₹{(row.amount || 0).toLocaleString()}
-        </span>
-      ),
+      render: (val: any, row: any) => {
+        if (!row) return 'N/A';
+        return (
+          <span className="font-semibold text-green-600">
+            ₹{(row.amount || 0).toLocaleString()}
+          </span>
+        );
+      },
     },
     {
       key: 'paymentMethod',
       header: 'Method',
-      render: (row: any) => (row.paymentMethod ? row.paymentMethod.replace(/_/g, ' ') : 'N/A'),
+      render: (val: any, row: any) => {
+        if (!row) return 'N/A';
+        return row.paymentMethod ? row.paymentMethod.replace(/_/g, ' ') : 'N/A';
+      },
     },
     {
       key: 'referenceNumber',
       header: 'Reference',
-      render: (row: any) => row.referenceNumber || '-',
+      render: (val: any, row: any) => (!row ? 'N/A' : (row.referenceNumber || '-')),
     },
     {
       key: 'createdAt',
       header: 'Submitted',
-      render: (row: any) => (row.createdAt ? new Date(row.createdAt).toLocaleDateString() : 'N/A'),
+      render: (val: any, row: any) => {
+        if (!row || !row.createdAt) return 'N/A';
+        return new Date(row.createdAt).toLocaleDateString();
+      },
     },
     {
       key: 'status',
       header: 'Status',
-      render: (row: any) => {
+      render: (val: any, row: any) => {
+        if (!row || !row.status) return <Badge variant="neutral">UNKNOWN</Badge>;
         const statusColors: any = {
           PENDING: 'yellow',
           APPROVED: 'green',
           REJECTED: 'red',
         };
-        return <Badge variant={statusColors[row.status] || 'neutral'}>{row.status || 'UNKNOWN'}</Badge>;
+        return <Badge variant={statusColors[row.status] || 'neutral'}>{row.status}</Badge>;
       },
     },
     {
       key: 'actions',
       header: 'Actions',
-      render: (row: any) =>
-        row.status === 'PENDING' ? (
+      render: (val: any, row: any) => {
+        if (!row) return <span className="text-sm text-gray-500">-</span>;
+        return row.status === 'PENDING' ? (
           <div className="flex gap-2">
             <Button
               size="sm"
@@ -171,7 +185,8 @@ export default function AdminPayments() {
           </div>
         ) : (
           <span className="text-sm text-gray-500">-</span>
-        ),
+        );
+      },
     },
   ];
 
