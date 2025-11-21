@@ -98,28 +98,28 @@ export default function TraderDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <Card>
             <CardBody className="text-center">
-              <p className="text-sm text-gray-600 mb-1">🔄 Active Quotes</p>
+              <p className="text-sm text-gray-600 mb-3">Active Quotes</p>
               <p className="text-3xl font-bold text-blue-600">{stats.active}</p>
               <p className="text-xs text-gray-500 mt-2">Awaiting offers</p>
             </CardBody>
           </Card>
           <Card>
             <CardBody className="text-center">
-              <p className="text-sm text-gray-600 mb-1">📊 With Offers</p>
+              <p className="text-sm text-gray-600 mb-3">With Offers</p>
               <p className="text-3xl font-bold text-green-600">{stats.withOffers}</p>
               <p className="text-xs text-gray-500 mt-2">Ready to select</p>
             </CardBody>
           </Card>
           <Card>
             <CardBody className="text-center">
-              <p className="text-sm text-gray-600 mb-1">✓ Completed</p>
+              <p className="text-sm text-gray-600 mb-3">Completed</p>
               <p className="text-3xl font-bold text-purple-600">{stats.completedShipments}</p>
               <p className="text-xs text-gray-500 mt-2">Shipments</p>
             </CardBody>
           </Card>
           <Card>
             <CardBody className="text-center">
-              <p className="text-sm text-gray-600 mb-1">💰 Total Spend</p>
+              <p className="text-sm text-gray-600 mb-3">Total Spend</p>
               <p className="text-3xl font-bold text-indigo-600">₹{stats.totalSpend.toFixed(0)}</p>
               <p className="text-xs text-gray-500 mt-2">On logistics</p>
             </CardBody>
