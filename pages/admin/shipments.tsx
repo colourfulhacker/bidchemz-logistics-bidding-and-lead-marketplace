@@ -27,7 +27,7 @@ export default function AdminShipments() {
 
       if (response.ok) {
         const data = await response.json();
-        setShipments(data.data || data || []);
+        setShipments(data.shipments || data.data || data || []);
       }
     } catch (error) {
       console.error('Error fetching shipments:', error);

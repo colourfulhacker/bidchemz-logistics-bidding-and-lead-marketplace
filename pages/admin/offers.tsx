@@ -27,7 +27,7 @@ export default function AdminOffers() {
 
       if (response.ok) {
         const data = await response.json();
-        setOffers(data.data || data || []);
+        setOffers(data.offers || data.data || data || []);
       }
     } catch (error) {
       console.error('Error fetching offers:', error);

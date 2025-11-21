@@ -27,7 +27,7 @@ export default function AdminQuotes() {
 
       if (response.ok) {
         const data = await response.json();
-        setQuotes(data.data || data || []);
+        setQuotes(data.quotes || data.data || data || []);
       }
     } catch (error) {
       console.error('Error fetching quotes:', error);
